@@ -129,12 +129,12 @@ public:
 	引数 type : イージングタイプ
 	引数 callback : 終了時のコールバック関数
 	***************************************/
-	template<class T>
-	static void To(std::shared_ptr<T>& ref, const T& start, const T& end, int duration, EaseType type, std::function<void()> callback = nullptr)
-	{
-		ValueTweener<T> *tweener = new ValueTweener<T>(ref, start, end, duration, type, callback);
-		mInstance->tweenerContainer.push_back(tweener);
-	}
+	//template<class T>
+	//static void To(std::shared_ptr<T>& ref, const T& start, const T& end, int duration, EaseType type, std::function<void()> callback = nullptr)
+	//{
+	//	ValueTweener<T> *tweener = new ValueTweener<T>(ref, start, end, duration, type, callback);
+	//	mInstance->tweenerContainer.push_back(tweener);
+	//}
 
 	/**************************************
 	値トゥイーン
