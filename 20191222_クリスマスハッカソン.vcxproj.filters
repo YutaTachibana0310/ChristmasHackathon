@@ -225,7 +225,6 @@
     <ClInclude Include="Library\imgui\imstb_textedit.h" />
     <ClInclude Include="Library\imgui\imstb_truetype.h" />
     <ClInclude Include="Library\json11\json11.hpp" />
-    <ClInclude Include="Library\nameof\nameof.hpp" />
     <ClInclude Include="Library\picojson\picojson.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="GameMain.h" />
