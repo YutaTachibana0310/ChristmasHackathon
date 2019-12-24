@@ -11,8 +11,8 @@
 #define EFFECT_UP_TEXTURE			_T("data/TEXTURE/Particle/pipo-sweetseffect001_480.png")	// 画像
 #define EFFECT_DOWN_TEXTURE			_T("data/TEXTURE/Particle/pipo-btleffect102h.png")	// 画像
 
-#define EFFECT_TEXTURE_SIZE_X	(500/2)		// テクスチャサイズ
-#define EFFECT_TEXTURE_SIZE_Y	(500/2)		// 同上
+#define EFFECT_TEXTURE_SIZE_X	(600/2)		// テクスチャサイズ
+#define EFFECT_TEXTURE_SIZE_Y	(600/2)		// 同上
 
 #define EFFECT_UP_TEXTURE_PATTERN_DIVIDE_X	(5)	// アニメパターンのテクスチャ内分割数（X)
 #define EFFECT_UP_TEXTURE_PATTERN_DIVIDE_Y	(3)	// アニメパターンのテクスチャ内分割数（Y)
@@ -25,7 +25,7 @@
 #define EFFECT_DOWN_TIME_ANIMATION			(4)	// アニメーションの切り替わるカウント
 
 
-#define EFFECT_MAX						(50)	// バレットの最大数
+#define EFFECT_MAX						(10)	// バレットの最大数
 
 //*****************************************************************************
 // 構造体宣言

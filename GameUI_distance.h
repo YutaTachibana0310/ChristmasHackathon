@@ -14,7 +14,7 @@
 #define UI_DISTANCE_SIZE_H		(UI_DISTANCE_SIZE_W*2)		// 同上
 #define UI_DISTANCE_POS_X			(1500)		// ポリゴンの初期位置X
 #define UI_DISTANCE_POS_Y			(800)		// 同上
-#define UI_DISTANCE_MAX			(99999)		// スコアの最大値
+#define UI_DISTANCE_MAX			(9999)		// スコアの最大値
 #define UI_DISTANCE_DIGIT			(4)			// 桁数
 
 
