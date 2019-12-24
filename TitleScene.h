@@ -1,14 +1,15 @@
 //=====================================
 //
-//GameConfig.h
-//機能:ゲーム設定
+//TitleScene.h
+//機能:タイトルシーン処理
 //Author:GP12B332 21 立花雄太
 //
 //=====================================
-#ifndef _GAMECONFIG_H_
-#define _GAMECONFIG_H_
+#ifndef _TitleScene_H_
+#define _TitleScene_H_
 
 #include "main.h"
+#include "Framework/Core/BaseScene.h"
 
 /**************************************
 前方宣言
@@ -17,14 +18,13 @@
 /**************************************
 クラス定義
 ***************************************/
-class GameConfig
+class TitleScene : public BaseScene
 {
+	using BaseScene::BaseScene;
 public:
-	enum SceneID
-	{
-		GameScene,
-		TitleScene,
-		Max
-	};
+	void Init();
+	void Uninit();
+	void Update();
+	void Draw();
 };
 #endif

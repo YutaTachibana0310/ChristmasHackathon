@@ -9,6 +9,9 @@
 
 #include "Framework/Camera/Camera.h"
 #include "Framework\Collider\ColliderManager.h"
+#include "Framework\Input\input.h"
+#include "Framework\Transition\TransitionController.h"
+#include "Framework\Core\SceneManager.h"
 
 #include "GameUI_size.h"
 #include "GameUI_distance.h"
@@ -19,6 +22,7 @@
 #include "Road.h"
 #include "CreamRoad.h"
 #include "GameParticleManager.h"
+#include "GameConfig.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -41,6 +45,9 @@ void GameScene::Init()
 
 	distance = 0.0f;
 	inGame = true;
+
+	int type = TransitionType::HexaPop;
+	TransitionController::Instance()->SetTransition(true, TransitionType(type));
 }
 
 /**************************************
@@ -60,6 +67,8 @@ void GameScene::Uninit()
 	UninitCreamRoad();
 
 	GameParticleManager::Instance()->Uninit();
+
+	ColliderManager::Instance()->Clear();
 }
 
 /**************************************
@@ -93,6 +102,17 @@ void GameScene::Update()
 		if (distance >= 60.0f * 60.0f)
 		{
 			inGame = false;
+		}
+	}
+	else
+	{
+		if (Keyboard::GetTrigger(DIK_RETURN))
+		{
+			int type = TransitionType::HexaPop;
+			TransitionController::Instance()->SetTransition(false, TransitionType(type), [&]()
+			{
+				SceneManager::ChangeScene(GameConfig::TitleScene);
+			});
 		}
 	}
 }
