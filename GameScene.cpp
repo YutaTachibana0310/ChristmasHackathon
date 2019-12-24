@@ -8,9 +8,9 @@
 #include "GameScene.h"
 
 #include "Framework/Camera/Camera.h"
-#include "GameSkybox.h"
 
 #include "Player.h"
+#include "GameBG.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -20,7 +20,7 @@ void GameScene::Init()
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
 
-	InitSkybox();
+	InitGameBG();
 	InitPlayer();
 }
 
@@ -31,7 +31,7 @@ void GameScene::Uninit()
 {
 	SAFE_DELETE(sceneCamera);
 
-	UninitSkybox();
+	UninitGameBG();
 	UninitPlayer();
 }
 
@@ -42,7 +42,6 @@ void GameScene::Update()
 {
 	sceneCamera->Update();
 
-	UpdateSkybox();
 	UpdatePlayer();
 }
 
@@ -53,6 +52,6 @@ void GameScene::Draw()
 {
 	sceneCamera->Set();
 
-	DrawSkybox();
+	DrawGameBG();
 	DrawPlayer();
 }

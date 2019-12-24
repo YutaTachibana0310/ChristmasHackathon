@@ -219,6 +219,7 @@
     <ClCompile Include="Framework\Transition\MistTransitionMask.cpp" />
     <ClCompile Include="Framework\Transition\TransitionController.cpp" />
     <ClCompile Include="Framework\Tween\Tween.cpp" />
+    <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Library\imgui\imgui.cpp" />
     <ClCompile Include="Library\imgui\imgui_demo.cpp" />
@@ -343,6 +344,7 @@
     <ClInclude Include="Framework\Tween\Tweener\Tweener.h" />
     <ClInclude Include="Framework\Tween\Tweener\ValueTweener.h" />
     <ClInclude Include="Framework\Tween\Tweener\ViewerTweener.h" />
+    <ClInclude Include="GameBG.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="Library\cppLinq\cpplinq.hpp" />
     <ClInclude Include="Library\imgui\imconfig.h" />
