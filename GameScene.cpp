@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "GameBG.h"
 #include "Road.h"
+#include "CreamRoad.h"
 
 /**************************************
 èâä˙âªèàóù
@@ -24,6 +25,7 @@ void GameScene::Init()
 	InitGameBG();
 	InitPlayer();
 	InitRoad();
+	InitCreamRoad();
 }
 
 /**************************************
@@ -36,6 +38,7 @@ void GameScene::Uninit()
 	UninitGameBG();
 	UninitPlayer();
 	UninitRoad();
+	UninitCreamRoad();
 }
 
 /**************************************
@@ -47,6 +50,7 @@ void GameScene::Update()
 
 	UpdatePlayer();
 	UpdateRoad();
+	UpdateCreamRoad();
 }
 
 /**************************************
@@ -59,4 +63,5 @@ void GameScene::Draw()
 	DrawGameBG();
 	DrawRoad();
 	DrawPlayer();
+	DrawCreamRoad();
 }

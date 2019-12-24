@@ -109,6 +109,7 @@
     <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="Effect\RoadEffect.cpp" />
+    <ClCompile Include="CreamRoad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -241,5 +242,6 @@
     <ClInclude Include="GameBG.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="Effect\RoadEffect.h" />
+    <ClInclude Include="CreamRoad.h" />
   </ItemGroup>
 </Project>
