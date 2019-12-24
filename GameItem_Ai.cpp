@@ -6,6 +6,7 @@
 ***********************************************************************/
 #include "GameItem_Ai.h"
 
+#include "Player.h"
 //---------------------------------------------------------------------
 //	ƒ}ƒNƒ’è‹`(“¯cpp“àŒÀ’è)
 //---------------------------------------------------------------------
@@ -31,7 +32,18 @@
 =====================================================================*/
 bool UpdateItemAI_NO(ENTITY_ITEM*pData)
 {
+	D3DXVECTOR3 vec;
+	float lengh;
 	pData->pos.z -= ITEM_SPD;
+	vec = GetPlayerPosition() - pData->pos;
+	lengh=D3DXVec3Length(&vec);
 
-	return false;
+	if (lengh < 60.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

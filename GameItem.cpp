@@ -7,7 +7,7 @@
 #include "GameItem.h"
 #include "GameItem_Ai.h"
 #include "CSV_Reader.h"
-
+#include "Gameeffect.h"
 //---------------------------------------------------------------------
 //	マクロ定義(同cpp内限定)
 //---------------------------------------------------------------------
@@ -18,7 +18,7 @@
 #define ITEM_TBL	_T("data/GIMMICK/GameItemTbl.csv")
 
 // しゅつげんｚ(仮）
-#define POP_Z		(100.0f)
+#define POP_Z		(1500.0f)
 #define MAX_ITEM	(300)
 //---------------------------------------------------------------------
 //	構造体、列挙体、共用体宣言(同cpp内限定)
@@ -57,14 +57,24 @@ void *ReferenceItemAI(ITEM_AI_TYPE Ai);
 //	グローバル変数
 //---------------------------------------------------------------------
 static GAME_ITEM_DATA *g_pItemData = NULL;
+int num_item = 0;
+
 GAME_TBL tbl[] =
 {
-{1000 ,-100,	0,	0	,1},
-{1000, 100, 0, 0, 0},
-{1000,	100,	0,	0,	1},
-{1000,	100,	0,	0	,0 },
-{1000, -30,	0,	0,	1},
-{1000,	30,	0,	0,	0},
+{1000 ,-50,	0,	0	,1},
+{0, 50, 0, 0, 1},
+{1000, -50, 0, 0, 0},
+{0, 50, 0, 0, 0},
+{800, -40, 0, 0, 0},
+{0, 40, 0, 0, 0},
+{800, -35, 0, 0, 1},
+{0, 35, 0, 0, 1},
+{1000, -20, 0, 0, 1},
+{0, -40, 0, 0, 1},
+{1000, -50, 0, 0, 0},
+{0, 50, 0, 0, 0},
+{0, 10, 0, 0, 0},
+{500, 30, 0, 0, 1},
 
 };
 /*=====================================================================
@@ -79,8 +89,8 @@ HRESULT InitGameItem(void)
 	// テクスチャのアドレス
 	const char *const filename[MAX_TEXTYPE] =
 	{
-		_T("Data/TEXTURE/Item/woman.png"),
-		_T("Data/TEXTURE/Item/woman.png"),
+		_T("Data/TEXTURE/Item/pipo-tr004.png"),
+		_T("Data/TEXTURE/Item/BULLET.png"),
 	};
 
 	// ヌルチェック
@@ -214,8 +224,16 @@ void UpdateGameItemAfterGameStart(void)
 	for (int i = 0; i < MAX_ITEM; i++)
 	{
 		if (g_pItemData->item[i].isUse == false)continue;
-		g_pItemData->item[i].UpdateEachGameItem(&g_pItemData-> item[i]);
-		if (g_pItemData->item[i].pos.z <= -20.0f)
+		if (g_pItemData->item[i].UpdateEachGameItem(&g_pItemData-> item[i]))
+		{
+			SetEffect(g_pItemData->item[i].pos, UP);
+			if (g_pItemData->item[i].bPlus == true)num_item++;
+			else num_item--;
+
+			g_pItemData->item[i].isUse = false;
+
+		}
+		if (g_pItemData->item[i].pos.z <= -40.0f)
 		{
 			g_pItemData->item[i].isUse = false;
 		}
@@ -350,8 +368,18 @@ void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus)
 	g_pItemData->item[i].pos = D3DXVECTOR3(X, ITEM_SIZE_Y, POP_Z);
 	g_pItemData->item[i].scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	g_pItemData->item[i].bPlus = bPlus;
-	g_pItemData->item[i].pTex = g_pItemData->pTex[Tex];
+	if (bPlus)
+	{
+		g_pItemData->item[i].pTex = g_pItemData->pTex[1];
+
+	}
+	else
+	{
+		g_pItemData->item[i].pTex = g_pItemData->pTex[0];
+
+	}
 	g_pItemData->item[i].UpdateEachGameItem = (bool(*)(ENTITY_ITEM*))ReferenceItemAI(Ai);
+
 }
 
 
@@ -372,4 +400,9 @@ void *ReferenceItemAI(ITEM_AI_TYPE Ai)
 		return NULL;
 		break;
 	}
+}
+
+int GetNumItems(void)
+{
+	return num_item;
 }

@@ -9,11 +9,11 @@
 //#include <d3dx9.h>
 #include "main.h"
 
-#define ITEM_SIZE_X		(20.0f/2)	// アイテムのサイズ指定(x)
-#define ITEM_SIZE_Y		(20.0f/2)	// (y)
+#define ITEM_SIZE_X		(10.0f/2)	// アイテムのサイズ指定(x)
+#define ITEM_SIZE_Y		(10.0f/2)	// (y)
 
 // アイテムスピード
-#define ITEM_SPD	(0.4f)
+#define ITEM_SPD	(3.0f)
 
 //---------------------------------------------------------------------
 //	構造体、列挙体、共用体宣言 (他cppでも使用する)
@@ -51,3 +51,4 @@ HRESULT InitGameItem(void);
 void UpdateGameItem(void);
 void DrawGameItem(void);
 void UninitGameItem(void);
+int GetNumItems(void);
