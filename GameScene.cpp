@@ -12,6 +12,7 @@
 #include "Framework\Input\input.h"
 #include "Framework\Transition\TransitionController.h"
 #include "Framework\Core\SceneManager.h"
+#include "Framework\Sound\BackgroundMusic.h"
 
 #include "GameUI_size.h"
 #include "GameUI_distance.h"
@@ -53,6 +54,8 @@ void GameScene::Init()
 
 	int type = TransitionType::HexaPop;
 	TransitionController::Instance()->SetTransition(true, TransitionType(type));
+
+	BGM::FadeIn(GameConfig::GameScene, 1.0f, 60, false);
 }
 
 /**************************************
@@ -131,6 +134,7 @@ void GameScene::Update()
 			int type = TransitionType::HexaPop;
 			TransitionController::Instance()->SetTransition(false, TransitionType(type), [&]()
 			{
+				BGM::Fade(0.0f, 60, true);
 				SceneManager::ChangeScene(GameConfig::TitleScene);
 			});
 		}
