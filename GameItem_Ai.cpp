@@ -38,7 +38,7 @@ bool UpdateItemAI_NO(ENTITY_ITEM*pData)
 	vec = GetPlayerPosition() - pData->pos;
 	lengh=D3DXVec3Length(&vec);
 
-	if (lengh < 60.0f)
+	if (lengh < 20.0f)
 	{
 		return true;
 	}
