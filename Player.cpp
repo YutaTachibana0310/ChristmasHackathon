@@ -9,6 +9,7 @@
 #include "Framework\Resource\ResourceManager.h"
 #include "Framework\Renderer3D\MeshContainer.h"
 #include "Framework\Tool\DebugWindow.h"
+#include "Framework\Tween\Tween.h"
 
 #include "Framework\Input\input.h"
 #include "Framework\Collider\BoxCollider3D.h"
@@ -57,7 +58,8 @@ void DrawPlayer()
 コンストラクタ
 ***************************************/
 Player::Player() :
-	isHitCream(false)
+	isHitCream(false),
+	currentLane(0)
 {
 	mesh = new MeshContainer();
 	ResourceManager::Instance()->GetMesh("Player", mesh);
@@ -93,33 +95,38 @@ void Player::Update()
 	//クリームがヒットしていたら大きくなる
 	//していなければ小さく
 	//フラグを毎フレーム下ろす
-	float deltaSize = isHitCream ? 0.05f : -0.05f;
-	scaleCream = Math::Clamp(0.0f, 100.0f, scaleCream + deltaSize);
+	float deltaSize = isHitCream ? 0.05f : -0.02f;
+	scaleCream = Math::Clamp(0.95f, 100.0f, scaleCream + deltaSize);
 	cream->SetScale({ 1.0f, scaleCream, scaleCream });
 	isHitCream = false;
 
 	//移動
-
-#ifdef _DEBUG
-	float deltaValue = 0.0f;
-	if (Keyboard::GetPress(DIK_1))
+	if (!inMoving)
 	{
-		deltaValue = 0.05f;
-	}
-	else if (Keyboard::GetPress(DIK_2))
-	{
-		deltaValue = -0.05f;
-	}
-	scaleCream = Math::Clamp(0.0f, 100.0f, scaleCream + deltaValue);
+		float inputX = Input::GetTriggerHorizontal(0);
+		
+		if (currentLane < 1 && inputX > 0.0f)
+		{
+			inMoving = true;
+			currentLane++;
 
-	cream->SetScale({ 1.0f, scaleCream, scaleCream });
+			Tween::Move(*this, { currentLane * 15.0f, 0.0f, -20.0f }, 20, EaseType::OutCubic, [this]()
+			{
+				inMoving = false;
+			});
+		}
 
-	Debug::Begin("Player");
-	static D3DXVECTOR3 pos = InitPos;
-	Debug::Slider("Pos", pos, Vector3::One * -50.0f, Vector3::One * 50.0f);
-	transform->SetPosition(pos);
-	Debug::End();
-#endif
+		if (currentLane > -1 && inputX < 0.0f)
+		{
+			inMoving = true;
+			currentLane--;
+
+			Tween::Move(*this, { currentLane * 15.0f, 0.0f, -20.0f }, 20, EaseType::OutCubic, [this]()
+			{
+				inMoving = false;
+			});
+		}
+	}
 }
 
 /**************************************

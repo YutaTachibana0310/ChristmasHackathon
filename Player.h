@@ -49,6 +49,9 @@ private:
 	std::shared_ptr<BoxCollider3D> collider;
 
 	bool isHitCream;
+
+	int currentLane;
+	bool inMoving;
 };
 
 class PlayerCream : public GameObject
