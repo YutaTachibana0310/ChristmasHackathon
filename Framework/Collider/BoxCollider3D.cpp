@@ -5,6 +5,7 @@
 //
 //=====================================
 #include "BoxCollider3D.h"
+#include "ColliderManager.h"
 
 using namespace std;
 
@@ -42,7 +43,6 @@ BoxCollider3D::BoxCollider3D(const std::string & tag, const std::shared_ptr<Tran
 	//オフセットを初期化
 	ZeroMemory(&offset, sizeof(offset));
 
-
 #ifdef BOXCOLLIDER3D_USE_DEBUG
 	//インスタンス数を数えてデバッグ表示用のメッシュを作成
 	if (instanceCount == 0)
@@ -53,22 +53,15 @@ BoxCollider3D::BoxCollider3D(const std::string & tag, const std::shared_ptr<Tran
 }
 
 /**************************************
-コンストラクタ
+インスタンス作成処理
 ***************************************/
-BoxCollider3D::BoxCollider3D(const std::string & tag, const std::shared_ptr<Transform> & transform, const D3DXVECTOR3 & size) :
-	BaseCollider(transform),
-	size(size),
-	tag(tag),
-	uniqueID(incrementID++)
+std::shared_ptr<BoxCollider3D> BoxCollider3D::Create(std::string tag, const std::shared_ptr<Transform>& transform)
 {
-	//オフセットを初期化
-	ZeroMemory(&offset, sizeof(offset));
+	std::shared_ptr<BoxCollider3D> ptr = std::shared_ptr<BoxCollider3D>(new BoxCollider3D(tag, transform));
 
-#ifdef BOXCOLLIDER3D_USE_DEBUG
-	if (instanceCount == 0)
-		CreateRenderTool();
-	instanceCount++;
-#endif
+	ColliderManager::Instance()->AddBoxCollider3D(tag, ptr);
+
+	return ptr;
 }
 
 /**************************************
@@ -76,8 +69,6 @@ BoxCollider3D::BoxCollider3D(const std::string & tag, const std::shared_ptr<Tran
 ***************************************/
 BoxCollider3D::~BoxCollider3D()
 {
-	//TODO : ColliderManagerに離脱を通知
-
 #ifdef BOXCOLLIDER3D_USE_DEBUG
 	instanceCount--;
 	if (instanceCount == 0)
@@ -94,7 +85,7 @@ bool BoxCollider3D::CheckCollision(BoxCollider3D& other)
 {
 	D3DXVECTOR3 thisPos = this->refTransform->GetPosition() + this->offset;
 	D3DXVECTOR3 otherPos = other.refTransform->GetPosition() + other.offset;
-	
+
 	D3DXVECTOR3 thisSize = Vector3::Multiply(this->size, this->refTransform->GetScale());
 	D3DXVECTOR3 otherSize = Vector3::Multiply(other.size, other.refTransform->GetScale());
 
@@ -111,14 +102,11 @@ bool BoxCollider3D::CheckCollision(BoxCollider3D& other)
 		return false;
 
 	//衝突通知
-	for (auto&& observer : this->observers)
-	{
-		observer->OnColliderHit(other.tag);
-	}
-	for (auto&& observer : other.observers)
-	{
-		observer->OnColliderHit(this->tag);
-	}
+	if(observer != nullptr)
+		observer->OnColliderHit(other.observer);
+
+	if(other.observer != nullptr)
+		other.observer->OnColliderHit(observer);
 
 	return true;
 }

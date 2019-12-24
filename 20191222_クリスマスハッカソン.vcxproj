@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CSV_Reader.cpp" />
+    <ClCompile Include="CreamRoad.cpp" />
     <ClCompile Include="Effect\RoadEffect.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
@@ -223,8 +224,12 @@
     <ClCompile Include="Framework\Tween\Tween.cpp" />
     <ClCompile Include="GameItem.cpp" />
     <ClCompile Include="GameItem_Ai.cpp" />
+    <ClCompile Include="Gameeffect.cpp" />
     <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameParticleManager.cpp" />
+    <ClCompile Include="GameUI_distance.cpp" />
+    <ClCompile Include="GameUI_size.cpp" />
     <ClCompile Include="Library\imgui\imgui.cpp" />
     <ClCompile Include="Library\imgui\imgui_demo.cpp" />
     <ClCompile Include="Library\imgui\imgui_draw.cpp" />
@@ -237,9 +242,11 @@
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Road.cpp" />
+    <ClCompile Include="SnowParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSV_Reader.h" />
+    <ClInclude Include="CreamRoad.h" />
     <ClInclude Include="Effect\RoadEffect.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
@@ -353,8 +360,12 @@
     <ClInclude Include="Framework\Tween\Tweener\ViewerTweener.h" />
     <ClInclude Include="GameItem.h" />
     <ClInclude Include="GameItem_Ai.h" />
+    <ClInclude Include="Gameeffect.h" />
     <ClInclude Include="GameBG.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GameParticleManager.h" />
+    <ClInclude Include="GameUI_distance.h" />
+    <ClInclude Include="GameUI_size.h" />
     <ClInclude Include="Library\cppLinq\cpplinq.hpp" />
     <ClInclude Include="Library\imgui\imconfig.h" />
     <ClInclude Include="Library\imgui\imgui.h" />
@@ -372,6 +383,7 @@
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Road.h" />
+    <ClInclude Include="SnowParticle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

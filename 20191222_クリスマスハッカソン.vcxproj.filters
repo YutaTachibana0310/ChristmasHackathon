@@ -108,10 +108,16 @@
     <ClCompile Include="GameItem.cpp" />
     <ClCompile Include="CSV_Reader.cpp" />
     <ClCompile Include="GameItem_Ai.cpp" />
+    <ClCompile Include="GameUI_size.cpp" />
+    <ClCompile Include="GameUI_distance.cpp" />
+    <ClCompile Include="Gameeffect.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="Effect\RoadEffect.cpp" />
+    <ClCompile Include="CreamRoad.cpp" />
+    <ClCompile Include="SnowParticle.cpp" />
+    <ClCompile Include="GameParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -243,9 +249,15 @@
     <ClInclude Include="GameItem.h" />
     <ClInclude Include="CSV_Reader.h" />
     <ClInclude Include="GameItem_Ai.h" />
+    <ClInclude Include="GameUI_size.h" />
+    <ClInclude Include="GameUI_distance.h" />
+    <ClInclude Include="Gameeffect.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameBG.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="Effect\RoadEffect.h" />
+    <ClInclude Include="CreamRoad.h" />
+    <ClInclude Include="SnowParticle.h" />
+    <ClInclude Include="GameParticleManager.h" />
   </ItemGroup>
 </Project>

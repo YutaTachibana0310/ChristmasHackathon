@@ -28,12 +28,12 @@ public:
 	bool IsActive();
 
 	void AddObserver(ColliderObserver* observer);
-	void RemoveObserver(ColliderObserver* observer);
+	void RemoveObserver();
 
 protected:
 	bool active;
 	std::shared_ptr<Transform> refTransform;
-	std::vector<ColliderObserver*> observers;
+	ColliderObserver* observer;
 };
 
 #endif

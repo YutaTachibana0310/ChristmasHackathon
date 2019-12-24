@@ -26,10 +26,6 @@
 class ColliderManager : public BaseSingleton<ColliderManager>
 {
 public:
-	//ボックスコライダー作成処理
-	std::shared_ptr<BoxCollider3D> CreateBoxCollider(const std::string& tag, const std::shared_ptr<Transform> transform);
-	std::shared_ptr<BoxCollider3D> CreateBoxCollider(const std::string& tag, const std::shared_ptr<Transform> transform, const D3DXVECTOR3& size);
-
 	//更新処理
 	void Update();
 
@@ -38,6 +34,9 @@ public:
 
 	//衝突判定
 	void CheckRoundRobin(const std::string& tag1, const std::string& tag2);
+
+	//当たり判定追加処理
+	void AddBoxCollider3D(const std::string& tag, std::shared_ptr<BoxCollider3D>& entity);
 
 private:
 	//ボックスコライダーコンテナ
