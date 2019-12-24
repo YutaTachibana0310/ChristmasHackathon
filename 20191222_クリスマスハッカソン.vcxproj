@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CSV_Reader.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
     <ClCompile Include="Framework\Animation\MyAllocateHierarchy.cpp" />
@@ -219,6 +220,8 @@
     <ClCompile Include="Framework\Transition\MistTransitionMask.cpp" />
     <ClCompile Include="Framework\Transition\TransitionController.cpp" />
     <ClCompile Include="Framework\Tween\Tween.cpp" />
+    <ClCompile Include="GameItem.cpp" />
+    <ClCompile Include="GameItem_Ai.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Library\imgui\imgui.cpp" />
     <ClCompile Include="Library\imgui\imgui_demo.cpp" />
@@ -232,6 +235,7 @@
     <ClCompile Include="GameSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CSV_Reader.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
     <ClInclude Include="Framework\Animation\MyAllocateHierarchy.h" />
@@ -342,6 +346,8 @@
     <ClInclude Include="Framework\Tween\Tweener\Tweener.h" />
     <ClInclude Include="Framework\Tween\Tweener\ValueTweener.h" />
     <ClInclude Include="Framework\Tween\Tweener\ViewerTweener.h" />
+    <ClInclude Include="GameItem.h" />
+    <ClInclude Include="GameItem_Ai.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="Library\cppLinq\cpplinq.hpp" />
     <ClInclude Include="Library\imgui\imconfig.h" />

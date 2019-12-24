@@ -6,7 +6,7 @@
 //
 //=====================================
 #include "GameScene.h"
-
+#include "GameItem.h"
 #include "Framework/Camera/Camera.h"
 #include "GameSkybox.h"
 
@@ -17,7 +17,8 @@ void GameScene::Init()
 {
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
-
+	InitGameItem();
+	StartGameItemTime();
 	InitSkybox();
 }
 
@@ -27,7 +28,7 @@ void GameScene::Init()
 void GameScene::Uninit()
 {
 	SAFE_DELETE(sceneCamera);
-
+	UninitGameItem();
 	UninitSkybox();
 }
 
@@ -37,7 +38,7 @@ void GameScene::Uninit()
 void GameScene::Update()
 {
 	sceneCamera->Update();
-
+	UpdateGameItem();
 	UpdateSkybox();
 }
 
@@ -47,6 +48,6 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	sceneCamera->Set();
-
+	DrawGameItem();
 	DrawSkybox();
 }
