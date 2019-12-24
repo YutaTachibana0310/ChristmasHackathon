@@ -41,7 +41,7 @@ void UninitCreamRoad()
 void UpdateCreamRoad()
 {
 	cntGenerateCream++;
-	if (cntGenerateCream == 120)
+	if (cntGenerateCream == 60)
 	{
 		CreamRoad *ptr = ObjectPool::Instance()->Create<CreamRoad>();
 		ptr->Init();

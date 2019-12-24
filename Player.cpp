@@ -96,7 +96,7 @@ void Player::Update()
 	//していなければ小さく
 	//フラグを毎フレーム下ろす
 	float deltaSize = isHitCream ? 0.05f : -0.02f;
-	scaleCream = Math::Clamp(0.95f, 100.0f, scaleCream + deltaSize);
+	scaleCream = Math::Clamp(0.95f, 25.0f, scaleCream + deltaSize);
 	cream->SetScale({ 1.0f, scaleCream, scaleCream });
 	isHitCream = false;
 
