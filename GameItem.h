@@ -35,13 +35,13 @@ enum ITEM_AI_TYPE {
 
 // アイテムデータ構造体
 typedef struct ENTITY_ITEM {
+	bool				isUse;								// 使用可能かどうか
 	LPDIRECT3DTEXTURE9	pTex;								// アイテムのテクスチャ
 	D3DXVECTOR3			pos;								// 位置
 	D3DXVECTOR3			rot;								// 回転
 	D3DXVECTOR3			scl;								// スケール（多分1.0f）
 	bool				(*UpdateEachGameItem)(ENTITY_ITEM*);// アイテムごとの更新関数ポインタ
 	bool				bPlus;								// そのアイテムを拾うとﾌﾟﾚｲﾔｰにプラス(true)マイナス(false)
-	ENTITY_ITEM			*next_pt;							// 次のアイテム
 }ENTITY_ITEM;
 //---------------------------------------------------------------------
 //	プロトタイプ宣言 (他cppでも使用する)

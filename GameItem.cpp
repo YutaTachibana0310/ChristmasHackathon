@@ -19,7 +19,7 @@
 
 // しゅつげんｚ(仮）
 #define POP_Z		(100.0f)
-
+#define MAX_ITEM	(300)
 //---------------------------------------------------------------------
 //	構造体、列挙体、共用体宣言(同cpp内限定)
 //---------------------------------------------------------------------
@@ -35,8 +35,7 @@ typedef struct GAME_TBL {
 typedef struct GAME_ITEM_DATA {
 	LPDIRECT3DTEXTURE9		pTex[MAX_TEXTYPE];	// アイテムで使用する総テクスチャ
 	LPDIRECT3DVERTEXBUFFER9	pVtx;				// アイテムで使用されるであろう頂点様
-	ENTITY_ITEM			*top_pt;			// 開始ポインタ	
-	ENTITY_ITEM			*bot_pt;			// 終端ポインタ			
+	ENTITY_ITEM			item[MAX_ITEM];			// 開始ポインタ	
 	//CSV_FILE			*ItemPopTbl;		// CSVのテーブル
 	int					TblIdx;				// 最後に出現させたテーブルの行
 	int					tItv;				// 前回出現したときからのじかん
@@ -51,12 +50,13 @@ typedef struct GAME_ITEM_DATA {
 void UpdateGameItemBeforeGameStart(void);
 void UpdateGameItemAfterGameStart(void);
 void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus);
+void DeleteItem(ENTITY_ITEM* item);
+
 void *ReferenceItemAI(ITEM_AI_TYPE Ai);
 //---------------------------------------------------------------------
 //	グローバル変数
 //---------------------------------------------------------------------
 static GAME_ITEM_DATA *g_pItemData = NULL;
-char str[1024];
 GAME_TBL tbl[] =
 {
 {1000 ,-100,	0,	0	,1},
@@ -211,12 +211,15 @@ void UpdateGameItemAfterGameStart(void)
 		else break;
 	}
 
-
-	work_pt = g_pItemData->top_pt;
-	while (work_pt != NULL)
+	for (int i = 0; i < MAX_ITEM; i++)
 	{
-		work_pt->UpdateEachGameItem(work_pt);
-		work_pt = work_pt->next_pt;
+		if (g_pItemData->item[i].isUse == false)continue;
+		g_pItemData->item[i].UpdateEachGameItem(&g_pItemData-> item[i]);
+		if (g_pItemData->item[i].pos.z <= -20.0f)
+		{
+			g_pItemData->item[i].isUse = false;
+		}
+
 	}
 	return;
 }
@@ -239,7 +242,6 @@ void UpdateGameItem(void)
 void DrawGameItem(void)
 {
 	D3DDEVICE(pDevice);
-	ENTITY_ITEM *work_pt = g_pItemData->top_pt;
 	D3DXMATRIX	mtxWorld;
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
@@ -253,34 +255,34 @@ void DrawGameItem(void)
 	pDevice->SetRenderState(D3DRS_LIGHTING, false);
 
 	// ヌルまでやる
-	while (work_pt != NULL)
-	{
+for(int i=0;i<MAX_ITEM;i++)
+{
+	if (g_pItemData->item[i].isUse == false)continue;
+
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&mtxWorld);
 
 		// スケールを反映
-		D3DXMatrixScaling(&mtxScl, work_pt->scl.x, work_pt->scl.y, work_pt->scl.z);
+		D3DXMatrixScaling(&mtxScl, g_pItemData->item[i].scl.x, g_pItemData->item[i].scl.y, g_pItemData->item[i].scl.z);
 		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScl);
 
 		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, work_pt->rot.y, work_pt->rot.x, work_pt->rot.z);
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_pItemData->item[i].rot.y, g_pItemData->item[i].rot.x, g_pItemData->item[i].rot.z);
 		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
 
 		// 移動を反映
-		D3DXMatrixTranslation(&mtxTranslate, work_pt->pos.x, work_pt->pos.y, work_pt->pos.z);
+		D3DXMatrixTranslation(&mtxTranslate, g_pItemData->item[i].pos.x, g_pItemData->item[i].pos.y, g_pItemData->item[i].pos.z);
 		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTranslate);
 		
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
 		// テクスチャの繁栄
-		pDevice->SetTexture(0, work_pt->pTex);
+		pDevice->SetTexture(0, g_pItemData->item[i].pTex);
 
 		// 描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
 		
-		// 次ポインタ
-		work_pt = work_pt->next_pt;
 	}
 
 	// ラインティングをyuukou にする
@@ -335,27 +337,23 @@ void StartGameItemTime(void)
 =====================================================================*/
 void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus)
 {
-	ENTITY_ITEM *work_pt =(ENTITY_ITEM*) calloc(1, sizeof (ENTITY_ITEM));
-
-	if (g_pItemData->top_pt == NULL)
+	int i = 0;
+	while (i < MAX_ITEM)
 	{
-		g_pItemData->top_pt = work_pt;
-		g_pItemData->bot_pt = work_pt;
+		if (g_pItemData->item[i].isUse == FALSE)break;
+		i++;
 	}
-	else
-	{
-		g_pItemData->bot_pt->next_pt = work_pt;
-		g_pItemData->bot_pt = work_pt;
-	}
+	if (i >= MAX_ITEM)return;
 
+	g_pItemData->item[i].isUse = true;
 	// 数値の代入
-	work_pt->next_pt = NULL;
-	work_pt->pos = D3DXVECTOR3(X, ITEM_SIZE_Y, POP_Z);
-	work_pt->scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	work_pt->bPlus = bPlus;
-	work_pt->pTex = g_pItemData->pTex[Tex];
-	work_pt->UpdateEachGameItem = (bool(*)(ENTITY_ITEM*))ReferenceItemAI(Ai);
+	g_pItemData->item[i].pos = D3DXVECTOR3(X, ITEM_SIZE_Y, POP_Z);
+	g_pItemData->item[i].scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	g_pItemData->item[i].bPlus = bPlus;
+	g_pItemData->item[i].pTex = g_pItemData->pTex[Tex];
+	g_pItemData->item[i].UpdateEachGameItem = (bool(*)(ENTITY_ITEM*))ReferenceItemAI(Ai);
 }
+
 
 /*=====================================================================
 ゲームアイテム	参照関数(同cpp専用)
