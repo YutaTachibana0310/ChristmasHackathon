@@ -19,6 +19,7 @@ void UninitPlayer();
 void UpdatePlayer();
 void DrawPlayer();
 
+D3DXVECTOR3 GetPlayerPosition();
 /**************************************
 ‘O•ûéŒ¾
 ***************************************/

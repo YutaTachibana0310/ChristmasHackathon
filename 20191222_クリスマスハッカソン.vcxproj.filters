@@ -105,6 +105,9 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
+    <ClCompile Include="GameItem.cpp" />
+    <ClCompile Include="CSV_Reader.cpp" />
+    <ClCompile Include="GameItem_Ai.cpp" />
     <ClCompile Include="GameUI_size.cpp" />
     <ClCompile Include="GameUI_distance.cpp" />
     <ClCompile Include="Gameeffect.cpp" />
@@ -243,6 +246,9 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
+    <ClInclude Include="GameItem.h" />
+    <ClInclude Include="CSV_Reader.h" />
+    <ClInclude Include="GameItem_Ai.h" />
     <ClInclude Include="GameUI_size.h" />
     <ClInclude Include="GameUI_distance.h" />
     <ClInclude Include="Gameeffect.h" />
