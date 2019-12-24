@@ -7,7 +7,7 @@
 #ifndef _BOXCOLLIDER3D_H_
 #define _BOXCOLLIDER3D_H_
 
-#define BOXCOLLIDER3D_USE_DEBUG
+//#define BOXCOLLIDER3D_USE_DEBUG
 
 #include "../../main.h"
 #include "BaseCollider.h"
