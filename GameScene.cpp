@@ -18,6 +18,7 @@
 #include "GameBG.h"
 #include "Road.h"
 #include "CreamRoad.h"
+#include "GameParticleManager.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -35,6 +36,8 @@ void GameScene::Init()
 	InitPlayer();
 	InitRoad();
 	InitCreamRoad();
+
+	GameParticleManager::Instance()->Init();
 }
 
 /**************************************
@@ -52,6 +55,8 @@ void GameScene::Uninit()
 	UninitPlayer();
 	UninitRoad();
 	UninitCreamRoad();
+
+	GameParticleManager::Instance()->Uninit();
 }
 
 /**************************************
@@ -71,6 +76,8 @@ void GameScene::Update()
 	UpdateUI_size();
 	UpdateUI_distance();
 	UpdateEffect();
+
+	GameParticleManager::Instance()->Update();
 }
 
 /**************************************
@@ -78,6 +85,8 @@ void GameScene::Update()
 ***************************************/
 void GameScene::Draw()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	sceneCamera->Set();
 
 	DrawGameBG();
@@ -85,7 +94,16 @@ void GameScene::Draw()
 	DrawPlayer();
 	DrawCreamRoad();
 
+	GameParticleManager::Instance()->Draw();
+
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, true);
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+
 	DrawUI_size();
 	DrawUI_distance();
 	DrawEffect();
+
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+
 }
