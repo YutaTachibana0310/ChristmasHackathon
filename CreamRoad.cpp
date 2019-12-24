@@ -39,29 +39,19 @@ void UninitCreamRoad()
 ***************************************/
 void UpdateCreamRoad()
 {
-	for (auto&& cream : container)
-	{
-		cream->Update();
-	}
-}
-
-/**************************************
-描画処理
-***************************************/
-void DrawCreamRoad()
-{
 	cntGenerateCream++;
-
 	if (cntGenerateCream == 120)
 	{
 		CreamRoad *ptr = ObjectPool::Instance()->Create<CreamRoad>();
+		ptr->Init();
+
 		container.push_back(ptr);
 		cntGenerateCream = 0;
 	}
 
 	for (auto&& cream : container)
 	{
-		cream->Draw();
+		cream->Update();
 	}
 
 	for (auto&& cream : container)
@@ -78,6 +68,17 @@ void DrawCreamRoad()
 }
 
 /**************************************
+描画処理
+***************************************/
+void DrawCreamRoad()
+{
+	for (auto&& cream : container)
+	{
+		cream->Draw();
+	}
+}
+
+/**************************************
 コンストラクタ
 ***************************************/
 CreamRoad::CreamRoad()
@@ -86,6 +87,8 @@ CreamRoad::CreamRoad()
 	ResourceManager::Instance()->GetMesh("CreamRoad", mesh);
 
 	transform->Move(Vector3::Up * Math::RandomRange(0.01f, 0.05f));
+
+	transform->SetScale({ 1.0f, 1.0f, 5.0f });
 }
 
 /**************************************
@@ -101,6 +104,11 @@ CreamRoad::~CreamRoad()
 ***************************************/
 void CreamRoad::Init()
 {
+	D3DXVECTOR3 position = transform->GetPosition();
+	position.z = 2500.0f;
+	position.x = Math::RandomRange(-1, 2) * 15.0f;
+	transform->SetPosition(position);
+	SetActive(true);
 }
 
 /**************************************
@@ -115,7 +123,17 @@ void CreamRoad::Uninit()
 ***************************************/
 void CreamRoad::Update()
 {
-	transform->Move(Vector3::Back * 0.5f);
+	D3DXVECTOR3 position = transform->GetPosition();
+
+	if (position.z < -500.0f)
+	{
+		SetActive(false);
+	}
+	else
+	{
+		position.z -= 15.0f;
+		transform->SetPosition(position);
+	}
 }
 
 /**************************************

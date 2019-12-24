@@ -59,6 +59,8 @@ RoadBG::RoadBG()
 	ResourceManager::Instance()->GetMesh("Road", mesh);
 
 	effect = new RoadEffect();
+
+	transform->SetScale({ 1.0f, 1.0f, 10.0f });
 }
 
 /**************************************
