@@ -19,6 +19,8 @@
 #include "Road.h"
 #include "CreamRoad.h"
 
+#include "title.h"
+
 /**************************************
 èâä˙âªèàóù
 ***************************************/
@@ -35,6 +37,8 @@ void GameScene::Init()
 	InitPlayer();
 	InitRoad();
 	InitCreamRoad();
+
+	InitTitle(0);
 }
 
 /**************************************
@@ -52,6 +56,8 @@ void GameScene::Uninit()
 	UninitPlayer();
 	UninitRoad();
 	UninitCreamRoad();
+
+	UninitTitle();
 }
 
 /**************************************
@@ -71,6 +77,8 @@ void GameScene::Update()
 	UpdateUI_size();
 	UpdateUI_distance();
 	UpdateEffect();
+
+	UpdateTitle();
 }
 
 /**************************************
@@ -88,4 +96,6 @@ void GameScene::Draw()
 	DrawUI_size();
 	DrawUI_distance();
 	DrawEffect();
+
+	DrawTitle();
 }
