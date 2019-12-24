@@ -22,6 +22,7 @@ void DrawPlayer();
 前方宣言
 ***************************************/
 class MeshContainer;
+class PlayerCream;
 
 /**************************************
 クラス定義
@@ -34,6 +35,23 @@ public:
 
 	void Update();
 	void Draw();
+
+private:
+	MeshContainer * mesh;
+
+	PlayerCream* cream;
+	float scaleCream;
+};
+
+class PlayerCream : public GameObject
+{
+public:
+	PlayerCream();
+	~PlayerCream();
+
+	void Draw();
+
+	void Rotate(float degree);
 
 private:
 	MeshContainer * mesh;
