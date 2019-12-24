@@ -105,6 +105,9 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
+    <ClCompile Include="GameUI_size.cpp" />
+    <ClCompile Include="GameUI_distance.cpp" />
+    <ClCompile Include="Gameeffect.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="Road.cpp" />
@@ -238,6 +241,9 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
+    <ClInclude Include="GameUI_size.h" />
+    <ClInclude Include="GameUI_distance.h" />
+    <ClInclude Include="Gameeffect.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameBG.h" />
     <ClInclude Include="Road.h" />
