@@ -49,9 +49,7 @@ public:
 	PlayerCream();
 	~PlayerCream();
 
-	void Draw();
-
-	void Rotate(float degree);
+	void Draw(const Transform& parent);
 
 private:
 	MeshContainer * mesh;

@@ -8,14 +8,14 @@
 #include "Player.h"
 #include "Framework\Resource\ResourceManager.h"
 #include "Framework\Renderer3D\MeshContainer.h"
+#include "Framework\Tool\DebugWindow.h"
 
 #include "Framework\Input\input.h"
-
 /**************************************
 ƒOƒ[ƒoƒ‹•Ï”
 ***************************************/
 static Player* player = nullptr;
-
+static const D3DXVECTOR3 InitPos = { 0.0f, 0.0f, -20.0f };
 /**************************************
 ‰Šú‰»
 ***************************************/
@@ -61,9 +61,7 @@ Player::Player()
 
 	cream = new PlayerCream();
 
-	const D3DXVECTOR3 InitPos = { 0.0f, 0.0f, -20.0f };
 	transform->SetPosition(InitPos);
-	cream->SetPosition(InitPos);
 
 	scaleCream = 0.0f;
 }
@@ -97,6 +95,12 @@ void Player::Update()
 	scaleCream = Math::Clamp(0.0f, 100.0f, scaleCream + deltaValue);
 
 	cream->SetScale({ 1.0f, scaleCream, scaleCream });
+
+	Debug::Begin("Player");
+	static D3DXVECTOR3 pos = InitPos;
+	Debug::Slider("Pos", pos, Vector3::One * -50.0f, Vector3::One * 50.0f);
+	transform->SetPosition(pos);
+	Debug::End();
 #endif
 }
 
@@ -108,7 +112,7 @@ void Player::Draw()
 	transform->SetWorld();
 	mesh->Draw();
 
-	cream->Draw();
+	cream->Draw(*transform);
 }
 
 /**************************************
@@ -131,16 +135,9 @@ PlayerCream::~PlayerCream()
 /**************************************
 •`‰æˆ—
 ***************************************/
-void PlayerCream::Draw()
+void PlayerCream::Draw(const Transform& parent)
 {
-	transform->SetWorld();
+	D3DXMATRIX mtxParent = parent.GetMatrix();
+	transform->SetWorld(&mtxParent);
 	mesh->Draw();
-}
-
-/**************************************
-‰ñ“]ˆ—
-***************************************/
-void PlayerCream::Rotate(float degree)
-{
-	transform->Rotate(degree, Vector3::Right);
 }
