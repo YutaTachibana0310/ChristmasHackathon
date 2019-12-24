@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Effect\RoadEffect.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
     <ClCompile Include="Framework\Animation\MyAllocateHierarchy.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Framework\Transition\TransitionController.cpp" />
     <ClCompile Include="Framework\Tween\Tween.cpp" />
     <ClCompile Include="Gameeffect.cpp" />
+    <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameUI_distance.cpp" />
     <ClCompile Include="GameUI_size.cpp" />
@@ -233,8 +235,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Road.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Effect\RoadEffect.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
     <ClInclude Include="Framework\Animation\MyAllocateHierarchy.h" />
@@ -346,6 +351,7 @@
     <ClInclude Include="Framework\Tween\Tweener\ValueTweener.h" />
     <ClInclude Include="Framework\Tween\Tweener\ViewerTweener.h" />
     <ClInclude Include="Gameeffect.h" />
+    <ClInclude Include="GameBG.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GameUI_distance.h" />
     <ClInclude Include="GameUI_size.h" />
@@ -364,6 +370,8 @@
     <ClInclude Include="GameConfig.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Road.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

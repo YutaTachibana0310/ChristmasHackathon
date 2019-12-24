@@ -8,11 +8,14 @@
 #include "GameScene.h"
 
 #include "Framework/Camera/Camera.h"
-#include "GameSkybox.h"
+
 #include "GameUI_size.h"
 #include "GameUI_distance.h"
 #include "Gameeffect.h"
 
+#include "Player.h"
+#include "GameBG.h"
+#include "Road.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -22,11 +25,14 @@ void GameScene::Init()
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
 
-	InitSkybox();
-
 	InitUI_size(0);
 	InitUI_distance(0);
 	InitEffect(0);
+
+	InitGameBG();
+	InitPlayer();
+	InitRoad();
+
 }
 
 /**************************************
@@ -36,11 +42,13 @@ void GameScene::Uninit()
 {
 	SAFE_DELETE(sceneCamera);
 
-	UninitSkybox();
-
 	UninitUI_size();
 	UninitUI_distance();
 	UninitEffect();
+
+	UninitGameBG();
+	UninitPlayer();
+	UninitRoad();
 }
 
 /**************************************
@@ -50,7 +58,8 @@ void GameScene::Update()
 {
 	sceneCamera->Update();
 
-	UpdateSkybox();
+	UpdatePlayer();
+	UpdateRoad();
 
 	UpdateUI_size();
 	UpdateUI_distance();
@@ -64,7 +73,9 @@ void GameScene::Draw()
 {
 	sceneCamera->Set();
 
-	DrawSkybox();
+	DrawGameBG();
+	DrawRoad();
+	DrawPlayer();
 
 	DrawUI_size();
 	DrawUI_distance();
