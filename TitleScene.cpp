@@ -10,8 +10,8 @@
 #include "Framework\Transition\TransitionController.h"
 #include "Framework\Input\input.h"
 #include "Framework\Core\SceneManager.h"
+#include "Framework\Sound\BackgroundMusic.h"
 #include "GameConfig.h"
-
 #include "title.h"
 
 /**************************************
@@ -22,6 +22,8 @@ void TitleScene::Init()
 	//ƒJƒƒ‰ì¬
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
+
+	BGM::FadeIn(GameConfig::TitleScene, 1.0f, 60, false);
 
 	InitTitle(0);
 
@@ -48,6 +50,7 @@ void TitleScene::Update()
 	{
 		TransitionController::Instance()->SetTransition(false, TransitionType::HexaPop, []()
 		{
+			BGM::Fade(0.0f, 60, true);
 			SceneManager::ChangeScene(GameConfig::GameScene);
 		});
 	}

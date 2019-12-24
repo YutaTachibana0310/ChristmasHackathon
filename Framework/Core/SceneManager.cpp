@@ -78,8 +78,8 @@ void SceneManager::_ChengeScene(const int sceneID)
 		TaskManager::Instance()->ClearAll();
 
 		//NOTE:d‚¢‚©‚àH
-		BGM::Clear();
-		SE::Clear();
+		//BGM::Clear();
+		//SE::Clear();
 	}
 
 	//Ø‚è‘Ö‚¦

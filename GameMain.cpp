@@ -12,6 +12,7 @@
 #include "TitleScene.h"
 
 #include "Framework\Resource\FontManager.h"
+#include "Framework\Sound\BackgroundMusic.h"
 
 /**************************************
 コンストラクタ
@@ -26,6 +27,9 @@ GameMain::GameMain(HINSTANCE hInstance, HWND hWnd) :
 
 	sceneManager->Add(GameConfig::GameScene, new GameScene(renderTexture, renderSurface));
 	sceneManager->Add(GameConfig::TitleScene, new TitleScene(renderTexture, renderSurface));
+
+	BGM::Load("data/BGM/bgm_game1.wav", GameConfig::GameScene);
+	BGM::Load("data/BGM/bgm_title.wav", GameConfig::TitleScene);
 
 	sceneManager->ChangeScene(GameConfig::TitleScene);
 }
