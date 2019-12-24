@@ -9,6 +9,10 @@
 
 #include "Framework/Camera/Camera.h"
 #include "GameSkybox.h"
+#include "GameUI_size.h"
+#include "GameUI_distance.h"
+#include "Gameeffect.h"
+
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -19,6 +23,10 @@ void GameScene::Init()
 	Camera::SetMainCamera(sceneCamera);
 
 	InitSkybox();
+
+	InitUI_size(0);
+	InitUI_distance(0);
+	InitEffect(0);
 }
 
 /**************************************
@@ -29,6 +37,10 @@ void GameScene::Uninit()
 	SAFE_DELETE(sceneCamera);
 
 	UninitSkybox();
+
+	UninitUI_size();
+	UninitUI_distance();
+	UninitEffect();
 }
 
 /**************************************
@@ -39,6 +51,10 @@ void GameScene::Update()
 	sceneCamera->Update();
 
 	UpdateSkybox();
+
+	UpdateUI_size();
+	UpdateUI_distance();
+	UpdateEffect();
 }
 
 /**************************************
@@ -49,4 +65,8 @@ void GameScene::Draw()
 	sceneCamera->Set();
 
 	DrawSkybox();
+
+	DrawUI_size();
+	DrawUI_distance();
+	DrawEffect();
 }
