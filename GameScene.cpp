@@ -10,6 +10,8 @@
 #include "Framework/Camera/Camera.h"
 #include "GameSkybox.h"
 
+#include "Player.h"
+
 /**************************************
 ‰Šú‰»ˆ—
 ***************************************/
@@ -19,6 +21,7 @@ void GameScene::Init()
 	Camera::SetMainCamera(sceneCamera);
 
 	InitSkybox();
+	InitPlayer();
 }
 
 /**************************************
@@ -29,6 +32,7 @@ void GameScene::Uninit()
 	SAFE_DELETE(sceneCamera);
 
 	UninitSkybox();
+	UninitPlayer();
 }
 
 /**************************************
@@ -39,6 +43,7 @@ void GameScene::Update()
 	sceneCamera->Update();
 
 	UpdateSkybox();
+	UpdatePlayer();
 }
 
 /**************************************
@@ -49,4 +54,5 @@ void GameScene::Draw()
 	sceneCamera->Set();
 
 	DrawSkybox();
+	DrawPlayer();
 }
