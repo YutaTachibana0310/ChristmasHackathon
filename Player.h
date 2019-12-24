@@ -21,6 +21,7 @@ void DrawPlayer();
 
 float GetPlayerSize();
 
+D3DXVECTOR3 GetPlayerPosition();
 /**************************************
 ‘O•ûéŒ¾
 ***************************************/
