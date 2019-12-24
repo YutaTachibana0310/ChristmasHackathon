@@ -243,6 +243,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="SnowParticle.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSV_Reader.h" />
@@ -384,6 +385,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="SnowParticle.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

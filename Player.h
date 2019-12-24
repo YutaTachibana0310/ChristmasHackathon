@@ -19,6 +19,8 @@ void UninitPlayer();
 void UpdatePlayer();
 void DrawPlayer();
 
+float GetPlayerSize();
+
 D3DXVECTOR3 GetPlayerPosition();
 /**************************************
 ‘O•ûéŒ¾
@@ -40,6 +42,11 @@ public:
 	void Draw();
 
 	void OnColliderHit(ColliderObserver *other) override;
+
+	float GetSize()
+	{
+		return scaleCream;
+	}
 
 private:
 	MeshContainer * mesh;

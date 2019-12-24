@@ -118,6 +118,7 @@
     <ClCompile Include="CreamRoad.cpp" />
     <ClCompile Include="SnowParticle.cpp" />
     <ClCompile Include="GameParticleManager.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -259,5 +260,6 @@
     <ClInclude Include="CreamRoad.h" />
     <ClInclude Include="SnowParticle.h" />
     <ClInclude Include="GameParticleManager.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
 </Project>

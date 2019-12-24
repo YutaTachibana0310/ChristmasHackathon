@@ -61,10 +61,10 @@ void Polygon2D::Draw()
 ***************************************/
 void Polygon2D::SetSize(const D3DXVECTOR2& size)
 {
-	vtxPos[0] = D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, 0.0f);
-	vtxPos[1] = D3DXVECTOR3( size.x * 0.5f, -size.y * 0.5f, 0.0f);
-	vtxPos[2] = D3DXVECTOR3(-size.x * 0.5f,  size.y * 0.5f, 0.0f);
-	vtxPos[3] = D3DXVECTOR3( size.x * 0.5f,  size.y * 0.5f, 0.0f);
+	vtxPos[0] = D3DXVECTOR3(-size.x * 1.0f, -size.y * 1.0f, 0.0f);
+	vtxPos[1] = D3DXVECTOR3( size.x * 1.0f, -size.y * 1.0f, 0.0f);
+	vtxPos[2] = D3DXVECTOR3(-size.x * 1.0f,  size.y * 1.0f, 0.0f);
+	vtxPos[3] = D3DXVECTOR3( size.x * 1.0f,  size.y * 1.0f, 0.0f);
 
 	vtxSize = size;
 }
