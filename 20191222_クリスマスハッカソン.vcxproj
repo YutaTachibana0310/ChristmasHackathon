@@ -224,6 +224,7 @@
     <ClCompile Include="Gameeffect.cpp" />
     <ClCompile Include="GameBG.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameParticleManager.cpp" />
     <ClCompile Include="GameUI_distance.cpp" />
     <ClCompile Include="GameUI_size.cpp" />
     <ClCompile Include="Library\imgui\imgui.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Road.cpp" />
+    <ClCompile Include="SnowParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreamRoad.h" />
@@ -355,6 +357,7 @@
     <ClInclude Include="Gameeffect.h" />
     <ClInclude Include="GameBG.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GameParticleManager.h" />
     <ClInclude Include="GameUI_distance.h" />
     <ClInclude Include="GameUI_size.h" />
     <ClInclude Include="Library\cppLinq\cpplinq.hpp" />
@@ -374,6 +377,7 @@
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Road.h" />
+    <ClInclude Include="SnowParticle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
