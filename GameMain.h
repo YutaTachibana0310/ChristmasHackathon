@@ -22,5 +22,6 @@ class GameMain : public BaseGame
 {
 public:
 	GameMain(HINSTANCE hIntance, HWND hWnd);
+	virtual ~GameMain();
 };
 #endif
