@@ -107,6 +107,7 @@
     <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="GameBG.cpp" />
+    <ClCompile Include="Road.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -237,5 +238,6 @@
     <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameBG.h" />
+    <ClInclude Include="Road.h" />
   </ItemGroup>
 </Project>

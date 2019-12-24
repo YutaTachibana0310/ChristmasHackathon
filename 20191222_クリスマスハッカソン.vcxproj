@@ -232,6 +232,7 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Road.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -362,6 +363,7 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Road.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

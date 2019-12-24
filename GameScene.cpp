@@ -11,6 +11,7 @@
 
 #include "Player.h"
 #include "GameBG.h"
+#include "Road.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -22,6 +23,7 @@ void GameScene::Init()
 
 	InitGameBG();
 	InitPlayer();
+	InitRoad();
 }
 
 /**************************************
@@ -33,6 +35,7 @@ void GameScene::Uninit()
 
 	UninitGameBG();
 	UninitPlayer();
+	UninitRoad();
 }
 
 /**************************************
@@ -43,6 +46,7 @@ void GameScene::Update()
 	sceneCamera->Update();
 
 	UpdatePlayer();
+	UpdateRoad();
 }
 
 /**************************************
@@ -53,5 +57,6 @@ void GameScene::Draw()
 	sceneCamera->Set();
 
 	DrawGameBG();
+	DrawRoad();
 	DrawPlayer();
 }
