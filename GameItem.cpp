@@ -24,16 +24,24 @@
 //	構造体、列挙体、共用体宣言(同cpp内限定)
 //---------------------------------------------------------------------
 
+typedef struct GAME_TBL {
+	int tItv;
+	float X;
+	int Ai;
+	int Tex;
+	bool bPlus;
+}GAME_TBL;
 
 typedef struct GAME_ITEM_DATA {
 	LPDIRECT3DTEXTURE9		pTex[MAX_TEXTYPE];	// アイテムで使用する総テクスチャ
 	LPDIRECT3DVERTEXBUFFER9	pVtx;				// アイテムで使用されるであろう頂点様
 	ENTITY_ITEM			*top_pt;			// 開始ポインタ	
 	ENTITY_ITEM			*bot_pt;			// 終端ポインタ			
-	CSV_FILE			*ItemPopTbl;		// CSVのテーブル
+	//CSV_FILE			*ItemPopTbl;		// CSVのテーブル
 	int					TblIdx;				// 最後に出現させたテーブルの行
 	int					tItv;				// 前回出現したときからのじかん
 	DWORD				tLast;				// 前フレーム時の時刻
+	int					tblsize;
 	void				(*Update)(void);	// 更新関数ポインタ
 }GAME_ITEM_DATA;
 
@@ -48,8 +56,17 @@ void *ReferenceItemAI(ITEM_AI_TYPE Ai);
 //	グローバル変数
 //---------------------------------------------------------------------
 static GAME_ITEM_DATA *g_pItemData = NULL;
+char str[1024];
+GAME_TBL tbl[] =
+{
+{1000 ,-100,	0,	0	,1},
+{1000, 100, 0, 0, 0},
+{1000,	100,	0,	0,	1},
+{1000,	100,	0,	0	,0 },
+{1000, -30,	0,	0,	1},
+{1000,	30,	0,	0,	0},
 
-
+};
 /*=====================================================================
 ゲームアイテム初期化関数
 戻り値：HRESULT
@@ -108,7 +125,7 @@ HRESULT InitGameItem(void)
 
 		// 変更のない頂点はあらかじめ設定を行う
 		{
-			VERTEX_3D	*pvtx;
+			VERTEX_3D	*pvtx = NULL;
 
 			hr = g_pItemData->pVtx->Lock(0, 0, (void**)&pvtx, 0);		// ロック
 
@@ -127,20 +144,21 @@ HRESULT InitGameItem(void)
 		}
 	}
 
-
+/*
 	// ポップテーブルの読み込み
 	if (FAILED(CreateCSVFromFile(ITEM_TBL, (char *)"dfddd",
 		CSV_CELRANGE{ 0, 1, 0, 0 },
-		&g_pItemData->ItemPopTbl/*, CSV_OPTION_SHOWALL*/)))
+		&g_pItemData->ItemPopTbl/*, CSV_OPTION_SHOWALL*///)))
 	// エラー
-	{
-		MessageBox(NULL, _T("初期化csvチェック"), _T("GAMEITEM"), NULL);
-		return E_FAIL;
-	}
-
+//	{/*
+	//	MessageBox(NULL, _T("初期化csvチェック"), _T("GAMEITEM"), NULL);
+	//	return E_FAIL;
+//	}*/
+	
 	// もろもろのステータス指定
 	g_pItemData->Update = UpdateGameItemBeforeGameStart;	// 更新関数ポインタ
 	g_pItemData->TblIdx = -1;								// インデックスを0xff..に
+	g_pItemData->tblsize = sizeof tbl / sizeof(GAME_TBL);
 	return S_OK;
 }
 
@@ -170,27 +188,29 @@ void UpdateGameItemAfterGameStart(void)
 	g_pItemData->tItv += tNow - g_pItemData->tLast;	// 間隔の算出及び加算
 	g_pItemData->tLast = tNow;						// 上で求めだ時刻の代入
 
-	// 間隔時刻がポップ間隔時刻を超えていた場合
-	while(true)
+													// 間隔時刻がポップ間隔時刻を超えていた場合
+	while (true)
 	{
-		if (g_pItemData->TblIdx + 1 >= g_pItemData->ItemPopTbl->Line_Size)
+		if (g_pItemData->TblIdx + 1 >=g_pItemData-> tblsize)
 		{
 			g_pItemData->TblIdx = -1;
 		}
-
-		if (_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx + 1, 0)._int <= g_pItemData->tItv)
+	//	sprintf_s(str, "%d", tbl[g_pItemData->TblIdx + 1].tItv);
+	//	MessageBox(NULL, str, NULL, NULL);
+		if (tbl[g_pItemData->TblIdx + 1].tItv <= g_pItemData->tItv)
 		{
 			// INTERVAL時間から引く
-			g_pItemData->tItv -= _ARRAY(g_pItemData->ItemPopTbl, ++g_pItemData->TblIdx, 0)._int;
-
+			g_pItemData->tItv -= tbl[++g_pItemData->TblIdx ].tItv;
+			//g_pItemData->tItv = 0;
 			// アイテムの設置
-			SetItem(_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx, 1)._float,
-				(ITEM_AI_TYPE)_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx, 2)._int,
-				(ITEM_TEX_TYPE)_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx, 3)._int,
-				_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx, 4)._int);
+			SetItem(tbl[g_pItemData->TblIdx].X,
+				(ITEM_AI_TYPE)tbl[g_pItemData->TblIdx].Ai,
+				(ITEM_TEX_TYPE)tbl[g_pItemData->TblIdx].Tex,
+				tbl[g_pItemData->TblIdx].bPlus);
 		}
 		else break;
 	}
+
 
 	work_pt = g_pItemData->top_pt;
 	while (work_pt != NULL)
@@ -279,7 +299,7 @@ void UninitGameItem(void)
 	if (g_pItemData == NULL)return;
 
 	// csvの開放
-	SAFE_RELEASE(g_pItemData->ItemPopTbl);
+	//SAFE_RELEASE(g_pItemData->ItemPopTbl);
 
 	// テクスチャの開放
 	for (int i = 0; i < MAX_TEXTYPE; i++)
@@ -315,7 +335,7 @@ void StartGameItemTime(void)
 =====================================================================*/
 void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus)
 {
-	ENTITY_ITEM *work_pt =(ENTITY_ITEM*) calloc(1, sizeof ENTITY_ITEM);
+	ENTITY_ITEM *work_pt =(ENTITY_ITEM*) calloc(1, sizeof (ENTITY_ITEM));
 
 	if (g_pItemData->top_pt == NULL)
 	{
