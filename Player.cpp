@@ -8,14 +8,17 @@
 #include "Player.h"
 #include "Framework\Resource\ResourceManager.h"
 #include "Framework\Renderer3D\MeshContainer.h"
+#include "Framework\Tool\DebugWindow.h"
+#include "Framework\Tween\Tween.h"
 
 #include "Framework\Input\input.h"
+#include "Framework\Collider\BoxCollider3D.h"
 
 /**************************************
 グローバル変数
 ***************************************/
 static Player* player = nullptr;
-
+static const D3DXVECTOR3 InitPos = { 0.0f, 0.0f, -20.0f };
 /**************************************
 初期化
 ***************************************/
@@ -54,18 +57,22 @@ void DrawPlayer()
 /**************************************
 コンストラクタ
 ***************************************/
-Player::Player()
+Player::Player() :
+	isHitCream(false),
+	currentLane(0)
 {
 	mesh = new MeshContainer();
 	ResourceManager::Instance()->GetMesh("Player", mesh);
 
 	cream = new PlayerCream();
 
-	const D3DXVECTOR3 InitPos = { 0.0f, 0.0f, -20.0f };
 	transform->SetPosition(InitPos);
-	cream->SetPosition(InitPos);
 
 	scaleCream = 0.0f;
+
+	collider = BoxCollider3D::Create("Player", transform);
+	collider->SetSize({ 6.0f, 5.0f, 1.0f });
+	collider->AddObserver(this);
 }
 
 /**************************************
@@ -75,6 +82,7 @@ Player::~Player()
 {
 	SAFE_DELETE(mesh);
 	SAFE_DELETE(cream);
+	collider.reset();
 }
 
 /**************************************
@@ -84,20 +92,41 @@ void Player::Update()
 {
 	transform->Rotate(5.0f, Vector3::Right);
 
-#ifdef _DEBUG
-	float deltaValue = 0.0f;
-	if (Keyboard::GetPress(DIK_1))
-	{
-		deltaValue = 0.05f;
-	}
-	else if (Keyboard::GetPress(DIK_2))
-	{
-		deltaValue = -0.05f;
-	}
-	scaleCream = Math::Clamp(0.0f, 100.0f, scaleCream + deltaValue);
-
+	//クリームがヒットしていたら大きくなる
+	//していなければ小さく
+	//フラグを毎フレーム下ろす
+	float deltaSize = isHitCream ? 0.05f : -0.02f;
+	scaleCream = Math::Clamp(0.95f, 25.0f, scaleCream + deltaSize);
 	cream->SetScale({ 1.0f, scaleCream, scaleCream });
-#endif
+	isHitCream = false;
+
+	//移動
+	if (!inMoving)
+	{
+		float inputX = Input::GetTriggerHorizontal(0);
+		
+		if (currentLane < 1 && inputX > 0.0f)
+		{
+			inMoving = true;
+			currentLane++;
+
+			Tween::Move(*this, { currentLane * 15.0f, 0.0f, -20.0f }, 20, EaseType::OutCubic, [this]()
+			{
+				inMoving = false;
+			});
+		}
+
+		if (currentLane > -1 && inputX < 0.0f)
+		{
+			inMoving = true;
+			currentLane--;
+
+			Tween::Move(*this, { currentLane * 15.0f, 0.0f, -20.0f }, 20, EaseType::OutCubic, [this]()
+			{
+				inMoving = false;
+			});
+		}
+	}
 }
 
 /**************************************
@@ -108,7 +137,18 @@ void Player::Draw()
 	transform->SetWorld();
 	mesh->Draw();
 
-	cream->Draw();
+	cream->Draw(*transform);
+
+	collider->Draw();
+}
+
+/**************************************
+当たり判定
+***************************************/
+void Player::OnColliderHit(ColliderObserver *other)
+{
+	Debug::Log("Hit Player");
+	isHitCream = true;
 }
 
 /**************************************
@@ -131,16 +171,9 @@ PlayerCream::~PlayerCream()
 /**************************************
 描画処理
 ***************************************/
-void PlayerCream::Draw()
+void PlayerCream::Draw(const Transform& parent)
 {
-	transform->SetWorld();
+	D3DXMATRIX mtxParent = parent.GetMatrix();
+	transform->SetWorld(&mtxParent);
 	mesh->Draw();
-}
-
-/**************************************
-回転処理
-***************************************/
-void PlayerCream::Rotate(float degree)
-{
-	transform->Rotate(degree, Vector3::Right);
 }

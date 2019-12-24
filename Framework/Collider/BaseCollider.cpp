@@ -47,26 +47,13 @@ bool BaseCollider::IsActive()
 ***************************************/
 void BaseCollider::AddObserver(ColliderObserver * observer)
 {
-	//重複確認
-	auto itr = std::find(observers.begin(), observers.end(), observer);
-
-	if (itr != observers.end())
-		return;
-
-	observers.push_back(observer);
+	this->observer = observer;
 }
 
 /**************************************
 オブザーバー削除処理
 ***************************************/
-void BaseCollider::RemoveObserver(ColliderObserver * observer)
+void BaseCollider::RemoveObserver()
 {
-	//登録確認
-	auto itr = std::find(observers.begin(), observers.end(), observer);
-
-	if (itr == observers.end())
-		return;
-
-	auto newEnd = std::remove(observers.begin(), observers.end(), observer);
-	observers.erase(newEnd, observers.end());
+	this->observer = nullptr;
 }

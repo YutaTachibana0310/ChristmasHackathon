@@ -8,6 +8,7 @@
 #include "GameScene.h"
 
 #include "Framework/Camera/Camera.h"
+#include "Framework\Collider\ColliderManager.h"
 
 #include "GameUI_size.h"
 #include "GameUI_distance.h"
@@ -16,6 +17,7 @@
 #include "Player.h"
 #include "GameBG.h"
 #include "Road.h"
+#include "CreamRoad.h"
 
 /**************************************
 ‰Šú‰»ˆ—
@@ -32,7 +34,7 @@ void GameScene::Init()
 	InitGameBG();
 	InitPlayer();
 	InitRoad();
-
+	InitCreamRoad();
 }
 
 /**************************************
@@ -49,6 +51,7 @@ void GameScene::Uninit()
 	UninitGameBG();
 	UninitPlayer();
 	UninitRoad();
+	UninitCreamRoad();
 }
 
 /**************************************
@@ -60,6 +63,10 @@ void GameScene::Update()
 
 	UpdatePlayer();
 	UpdateRoad();
+	UpdateCreamRoad();
+
+	//“–‚½‚è”»’è
+	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
 
 	UpdateUI_size();
 	UpdateUI_distance();
@@ -76,6 +83,7 @@ void GameScene::Draw()
 	DrawGameBG();
 	DrawRoad();
 	DrawPlayer();
+	DrawCreamRoad();
 
 	DrawUI_size();
 	DrawUI_distance();

@@ -11,34 +11,6 @@
 ***************************************/
 
 /**************************************
-ボックスコライダー作成処理
-***************************************/
-std::shared_ptr<BoxCollider3D> ColliderManager::CreateBoxCollider(const std::string & tag, const std::shared_ptr<Transform> transform)
-{	
-	//コライダーのインスタンス作成
-	std::shared_ptr<BoxCollider3D> ptr = std::make_shared<BoxCollider3D>(tag, transform);
-
-	//コンテナにコライダーへのweak_ptrを追加
-	boxColliderMap[tag].push_back(std::weak_ptr<BoxCollider3D>(ptr));
-	
-	return ptr;
-}
-
-/**************************************
-ボックスコライダー作成処理
-***************************************/
-std::shared_ptr<BoxCollider3D> ColliderManager::CreateBoxCollider(const std::string & tag, const std::shared_ptr<Transform> transform, const D3DXVECTOR3 & size)
-{
-	//コライダーのインスタンス作成
-	std::shared_ptr<BoxCollider3D> ptr = std::make_shared<BoxCollider3D>(tag, transform, size);
-
-	//コンテナにコライダーへのweak_ptrを追加
-	boxColliderMap[tag].push_back(std::weak_ptr<BoxCollider3D>(ptr));
-
-	return ptr;
-}
-
-/**************************************
 衝突判定処理
 ***************************************/
 void ColliderManager::Update()
@@ -98,6 +70,15 @@ void ColliderManager::CheckRoundRobin(const std::string & tag1, const std::strin
 			collider1->CheckCollision(*collider2);
 		}
 	}
+}
+
+/**************************************
+ボックスコライダー追加処理
+***************************************/
+void ColliderManager::AddBoxCollider3D(const std::string & tag, std::shared_ptr<BoxCollider3D>& entity)
+{
+	std::weak_ptr<BoxCollider3D> ptr = std::weak_ptr<BoxCollider3D>(entity);
+	boxColliderMap[tag].push_back(ptr);
 }
 
 

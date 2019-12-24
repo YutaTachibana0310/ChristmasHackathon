@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreamRoad.cpp" />
     <ClCompile Include="Effect\RoadEffect.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
@@ -239,6 +240,7 @@
     <ClCompile Include="Road.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreamRoad.h" />
     <ClInclude Include="Effect\RoadEffect.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
