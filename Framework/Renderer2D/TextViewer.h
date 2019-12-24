@@ -65,11 +65,20 @@ public:
 	//イタリック使用設定
 	void UseItalic(bool state);
 
+	//アウトライン使用設定
+	void UseOutLine(bool state);
+
 	//水平方向のレイアウト設定
 	void SetHorizontalAlignment(HorizontalAlignment alignment);
 
 	//垂直方向のレイアウト設定
 	void SetVerticalAlignment(VerticalAlignment alignment);
+
+	//アウトラインの幅設定
+	void SetOutlineWidth(int width);
+
+	//アウトラインのカラー設定
+	void SetOutlineColor(const D3DXCOLOR& color);
 
 private:
 	//フォントインターフェイス
@@ -92,6 +101,9 @@ private:
 	//イタリック使用
 	bool useItalic;
 
+	//アウトライン使用
+	bool useOutline;
+
 	//レイアウト
 	HorizontalAlignment horizontal;
 	VerticalAlignment vertical;
@@ -105,6 +117,10 @@ private:
 
 	//Rect計算処理
 	RECT GetRect() const;
+
+	//アウトライン用内部クラス
+	class OutLine;
+	OutLine* outline;
 };
 
 #endif

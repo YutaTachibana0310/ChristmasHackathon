@@ -104,6 +104,7 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
+    <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -231,5 +232,6 @@
     <ClInclude Include="GameConfig.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
+    <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 //=====================================
 #include "TextViewer.h"
 #include "../Resource/FontManager.h"
+#include "TextOutLine.h"
 
 /**************************************
 コンストラクタ
@@ -20,11 +21,14 @@ TextViewer::TextViewer(const char * fontName, int fontSize) :
 	color(0xffffffff),
 	text(""),
 	useItalic(false),
+	useOutline(false),
 	horizontal(HorizontalAlignment::Center),
 	vertical(VerticalAlignment::Center)
 {
 	font = FontManager::Instance()->GetFont(fontName, fontSize);
 	italicFont = FontManager::Instance()->GetItalicFont(fontName, fontSize);
+
+	outline = new OutLine(this);
 }
 
 /**************************************
@@ -34,6 +38,7 @@ TextViewer::~TextViewer()
 {
 	SAFE_RELEASE(font);
 	SAFE_RELEASE(italicFont);
+	SAFE_DELETE(outline);
 }
 
 /**************************************
@@ -47,6 +52,12 @@ void TextViewer::Draw(void)
 	D3DXVECTOR3 position = transform->GetPosition();
 	posX = (int)position.x;
 	posY = (int)position.y;
+
+	//アウトライン描画
+	if (useOutline)
+	{
+		outline->Draw();
+	}
 
 	//描画
 	RECT rect = GetRect();
@@ -101,6 +112,14 @@ void TextViewer::UseItalic(bool state)
 }
 
 /**************************************
+アウトライン使用設定
+***************************************/
+void TextViewer::UseOutLine(bool state)
+{
+	useOutline = state;
+}
+
+/**************************************
 水平方向のレイアウト設定
 ***************************************/
 void TextViewer::SetHorizontalAlignment(HorizontalAlignment alignment)
@@ -114,6 +133,22 @@ void TextViewer::SetHorizontalAlignment(HorizontalAlignment alignment)
 void TextViewer::SetVerticalAlignment(VerticalAlignment alignment)
 {
 	vertical = alignment;
+}
+
+/**************************************
+アウトラインの幅設定
+***************************************/
+void TextViewer::SetOutlineWidth(int width)
+{
+	outline->SetWidth(width);
+}
+
+/**************************************
+アウトラインのカラー設定
+***************************************/
+void TextViewer::SetOutlineColor(const D3DXCOLOR & color)
+{
+	outline->SetColor(color);
 }
 
 /**************************************

@@ -184,6 +184,7 @@
     <ClCompile Include="Framework\PostEffect\SpikeNoiseController.cpp" />
     <ClCompile Include="Framework\Renderer2D\CircleGauge.cpp" />
     <ClCompile Include="Framework\Renderer2D\Polygon2D.cpp" />
+    <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
     <ClCompile Include="Framework\Renderer2D\TextViewer.cpp" />
     <ClCompile Include="Framework\Renderer3D\BillboardObject.cpp" />
     <ClCompile Include="Framework\Renderer3D\BillboardTransform.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="Framework\PostEffect\SpikeNoiseController.h" />
     <ClInclude Include="Framework\Renderer2D\CircleGauge.h" />
     <ClInclude Include="Framework\Renderer2D\Polygon2D.h" />
+    <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
     <ClInclude Include="Framework\Renderer2D\TextViewer.h" />
     <ClInclude Include="Framework\Renderer3D\BillboardObject.h" />
     <ClInclude Include="Framework\Renderer3D\BillboardTransform.h" />
