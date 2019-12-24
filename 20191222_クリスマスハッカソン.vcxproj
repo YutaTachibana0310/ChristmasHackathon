@@ -242,6 +242,7 @@
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Road.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="SnowParticle.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
@@ -384,6 +385,7 @@
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Road.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="SnowParticle.h" />
     <ClInclude Include="TitleScene.h" />
   </ItemGroup>

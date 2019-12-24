@@ -24,6 +24,8 @@
 #include "GameParticleManager.h"
 #include "GameConfig.h"
 
+#include "title.h"
+
 /**************************************
 ‰Šú‰»ˆ—
 ***************************************/
@@ -96,6 +98,7 @@ void GameScene::Update()
 	UpdateUI_distance();
 
 	UpdateEffect();
+
 	GameParticleManager::Instance()->Update();
 	
 	if (inGame)
@@ -167,5 +170,4 @@ void GameScene::Draw()
 
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
-
 }

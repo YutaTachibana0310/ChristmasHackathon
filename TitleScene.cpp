@@ -12,6 +12,8 @@
 #include "Framework\Core\SceneManager.h"
 #include "GameConfig.h"
 
+#include "title.h"
+
 /**************************************
 ‰Šú‰»ˆ—
 ***************************************/
@@ -21,6 +23,8 @@ void TitleScene::Init()
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
 
+	InitTitle(0);
+
 	TransitionController::Instance()->SetTransition(true, TransitionType::HexaPop);
 }
 
@@ -29,6 +33,7 @@ void TitleScene::Init()
 ***************************************/
 void TitleScene::Uninit()
 {
+	UninitTitle();
 	SAFE_DELETE(sceneCamera);
 }
 
@@ -37,6 +42,8 @@ void TitleScene::Uninit()
 ***************************************/
 void TitleScene::Update()
 {
+	UpdateTitle();
+
 	if (Keyboard::GetTrigger(DIK_RETURN))
 	{
 		TransitionController::Instance()->SetTransition(false, TransitionType::HexaPop, []()
@@ -51,5 +58,13 @@ void TitleScene::Update()
 ***************************************/
 void TitleScene::Draw()
 {
-	Debug::Log("CurrentScene:Title");
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, true);
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+
+	DrawTitle();
+
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 }

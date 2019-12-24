@@ -27,7 +27,7 @@ GameMain::GameMain(HINSTANCE hInstance, HWND hWnd) :
 	sceneManager->Add(GameConfig::GameScene, new GameScene(renderTexture, renderSurface));
 	sceneManager->Add(GameConfig::TitleScene, new TitleScene(renderTexture, renderSurface));
 
-	sceneManager->ChangeScene(GameConfig::GameScene);
+	sceneManager->ChangeScene(GameConfig::TitleScene);
 }
 
 /**************************************
