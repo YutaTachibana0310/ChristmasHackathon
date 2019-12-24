@@ -9,6 +9,7 @@
 #include "Framework\Resource\ResourceManager.h"
 #include "Framework\Renderer3D\MeshContainer.h"
 #include "Framework\Core\ObjectPool.h"
+#include "Framework\Collider\BoxCollider3D.h"
 
 /**************************************
 ƒOƒ[ƒoƒ‹•Ï”
@@ -86,8 +87,10 @@ CreamRoad::CreamRoad()
 	mesh = new MeshContainer();
 	ResourceManager::Instance()->GetMesh("CreamRoad", mesh);
 
-	transform->Move(Vector3::Up * Math::RandomRange(0.01f, 0.05f));
+	collider = BoxCollider3D::Create("CreamRoad", transform);
+	collider->SetSize({ 7.5f, 10.0f, 80.0f });
 
+	transform->Move(Vector3::Up * Math::RandomRange(0.01f, 0.05f));
 	transform->SetScale({ 1.0f, 1.0f, 5.0f });
 }
 
@@ -97,6 +100,7 @@ CreamRoad::CreamRoad()
 CreamRoad::~CreamRoad()
 {
 	SAFE_DELETE(mesh);
+	collider.reset();
 }
 
 /**************************************
@@ -143,4 +147,6 @@ void CreamRoad::Draw()
 {
 	transform->SetWorld();
 	mesh->Draw();
+
+	collider->Draw();
 }

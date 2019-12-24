@@ -23,6 +23,7 @@ void DrawPlayer();
 ***************************************/
 class MeshContainer;
 class PlayerCream;
+class BoxCollider3D;
 
 /**************************************
 ƒNƒ‰ƒX’è‹`
@@ -41,6 +42,8 @@ private:
 
 	PlayerCream* cream;
 	float scaleCream;
+
+	std::shared_ptr<BoxCollider3D> collider;
 };
 
 class PlayerCream : public GameObject

@@ -14,6 +14,7 @@
 ‘O•ûéŒ¾
 ***************************************/
 class MeshContainer;
+class BoxCollider3D;
 
 void InitCreamRoad();
 void UninitCreamRoad();
@@ -36,5 +37,6 @@ public:
 
 private:
 	MeshContainer * mesh;
+	std::shared_ptr<BoxCollider3D> collider;
 };
 #endif

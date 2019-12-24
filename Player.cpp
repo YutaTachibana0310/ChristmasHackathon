@@ -11,6 +11,8 @@
 #include "Framework\Tool\DebugWindow.h"
 
 #include "Framework\Input\input.h"
+#include "Framework\Collider\BoxCollider3D.h"
+
 /**************************************
 ƒOƒ[ƒoƒ‹•Ï”
 ***************************************/
@@ -64,6 +66,9 @@ Player::Player()
 	transform->SetPosition(InitPos);
 
 	scaleCream = 0.0f;
+
+	collider = BoxCollider3D::Create("Player", transform);
+	collider->SetSize({ 6.0f, 5.0f, 1.0f });
 }
 
 /**************************************
@@ -73,6 +78,7 @@ Player::~Player()
 {
 	SAFE_DELETE(mesh);
 	SAFE_DELETE(cream);
+	collider.reset();
 }
 
 /**************************************
@@ -113,6 +119,8 @@ void Player::Draw()
 	mesh->Draw();
 
 	cream->Draw(*transform);
+
+	collider->Draw();
 }
 
 /**************************************

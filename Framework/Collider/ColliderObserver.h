@@ -19,7 +19,7 @@
 class ColliderObserver
 {
 public:
-	virtual void OnColliderHit(const std::string& other) = 0;
+	virtual void OnColliderHit(ColliderObserver *other) = 0;
 };
 
 #endif
