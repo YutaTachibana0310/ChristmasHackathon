@@ -9,6 +9,8 @@
 #include "Framework\Resource\ResourceManager.h"
 #include "Framework\Renderer3D\MeshContainer.h"
 
+#include "Effect\RoadEffect.h"
+
 /**************************************
 ƒOƒ[ƒoƒ‹•Ï”
 ***************************************/
@@ -56,7 +58,7 @@ RoadBG::RoadBG()
 	mesh = new MeshContainer();
 	ResourceManager::Instance()->GetMesh("Road", mesh);
 
-
+	effect = new RoadEffect();
 }
 
 /**************************************
@@ -65,6 +67,7 @@ RoadBG::RoadBG()
 RoadBG::~RoadBG()
 {
 	SAFE_DELETE(mesh);
+	SAFE_DELETE(effect);
 }
 
 /**************************************
@@ -72,6 +75,8 @@ RoadBG::~RoadBG()
 ***************************************/
 void RoadBG::Update()
 {
+	offset = Math::WrapAround(0.0f, 1.0f, offset += 0.05f);
+	effect->SetUV({ 0.0f, offset });
 }
 
 /**************************************
@@ -79,6 +84,13 @@ void RoadBG::Update()
 ***************************************/
 void RoadBG::Draw()
 {
-	transform->SetWorld();
-	mesh->Draw();
+	effect->SetWorld(*transform);
+
+	effect->Begin();
+	effect->BeginPass(0);
+
+	mesh->Draw(*effect);
+
+	effect->EndPass();
+	effect->End();
 }

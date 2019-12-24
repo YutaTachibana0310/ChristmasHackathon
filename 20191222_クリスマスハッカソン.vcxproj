@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Effect\RoadEffect.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
     <ClCompile Include="Framework\Animation\MyAllocateHierarchy.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="Road.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Effect\RoadEffect.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
     <ClInclude Include="Framework\Animation\MyAllocateHierarchy.h" />

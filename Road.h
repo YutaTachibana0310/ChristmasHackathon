@@ -19,7 +19,7 @@ void UpdateRoad();
 void DrawRoad();
 
 class MeshContainer;
-
+class RoadEffect;
 /**************************************
 ƒNƒ‰ƒX’è‹`
 ***************************************/
@@ -36,5 +36,6 @@ private:
 	float offset;
 
 	MeshContainer *mesh;
+	RoadEffect *effect;
 };
 #endif
