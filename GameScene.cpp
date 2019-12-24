@@ -38,6 +38,9 @@ void GameScene::Init()
 	InitCreamRoad();
 
 	GameParticleManager::Instance()->Init();
+
+	distance = 0.0f;
+	inGame = true;
 }
 
 /**************************************
@@ -66,18 +69,32 @@ void GameScene::Update()
 {
 	sceneCamera->Update();
 
-	UpdatePlayer();
-	UpdateRoad();
-	UpdateCreamRoad();
-
-	//“–‚½‚è”»’è
-	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
-
-	UpdateUI_size();
-	UpdateUI_distance();
 	UpdateEffect();
-
 	GameParticleManager::Instance()->Update();
+	
+	if (inGame)
+	{
+		UpdatePlayer();
+		UpdateRoad();
+		UpdateCreamRoad();
+
+		//“–‚½‚è”»’è
+		ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
+
+		UpdateUI_size();
+		UpdateUI_distance();
+
+		distance += 1.0f;
+		AddUI_distance(1);
+
+		float sizeCake = GetPlayerSize();
+		AddUI_size((int)sizeCake);
+
+		if (distance >= 60.0f * 60.0f)
+		{
+			inGame = false;
+		}
+	}
 }
 
 /**************************************
