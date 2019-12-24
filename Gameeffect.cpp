@@ -96,6 +96,8 @@ void UpdateEffect(void)
 		if (GameeffectWk[i].use == true)		// 使用している状態なら更新する
 		{
 			// アニメーション
+			SetVertexEffect(i);				// 移動後の座標で頂点を設定
+
 			GameeffectWk[i].CountAnim++;
 
 			switch (GameeffectWk[i].type)
@@ -115,6 +117,7 @@ void UpdateEffect(void)
 				{
 					GameeffectWk[i].use = false;
 					GameeffectWk[i].CountAnim = 0;
+					GameeffectWk[i].PatternAnim = 0;
 				}
 				break;
 
@@ -127,12 +130,13 @@ void UpdateEffect(void)
 					// テクスチャ座標を設定
 					SetTextureEffect(i, GameeffectWk[i].PatternAnim);
 				}
-				SetVertexEffect(i);				// 移動後の座標で頂点を設定
 
 				if (GameeffectWk[i].CountAnim >= EFFECT_DOWN_TIME_ANIMATION * EFFECT_DOWN_ANIM_PATTERN_NUM)
 				{
 					GameeffectWk[i].use = false;
 					GameeffectWk[i].CountAnim = 0;
+					GameeffectWk[i].PatternAnim = 0;
+
 				}
 				break;
 
@@ -142,19 +146,16 @@ void UpdateEffect(void)
 		}
 	}
 
-	test++;
+	//test++;
 
-	if (test < 121)
-	{
-		if (test % 120 == 0)
-		{
-			SetEffect(D3DXVECTOR3(500.0f, 500.0f, 500.0f), UP);
-		}
-		if (test % 60 == 0)
-		{
-			SetEffect(D3DXVECTOR3(800.0f, 800.0f, 800.0f), DOWN);
-		}
-	}
+	//	if (test % 120 == 0)
+	//	{
+	//		SetEffect(D3DXVECTOR3(1500.0f, 1000.0f, 500.0f), UP);
+	//	}
+	//	if (test % 70 == 0)
+	//	{
+	//		SetEffect(D3DXVECTOR3(800.0f, 800.0f, 800.0f), DOWN);
+	//	}
 
 }
 
@@ -189,7 +190,6 @@ void DrawEffect(void)
 				// ポリゴンの描画
 				pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, NUM_POLYGON, GameeffectWk[i].vertexWk, sizeof(VERTEX_2D));
 				break;
-
 
 			default:
 				break;

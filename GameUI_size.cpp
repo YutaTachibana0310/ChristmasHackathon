@@ -94,7 +94,7 @@ void UpdateUI_size(void)
 {
 	// 毎フレーム実行される処理を記述する
 
-	g_UI_size += 1;
+	//g_UI_size += 1;
 	SetTextureUI_size();
 
 }
@@ -155,10 +155,10 @@ HRESULT MakeVertexUI_size(void)
 		g_vertexWk_text[3].rhw = 1.0f;
 
 	// 反射光の設定
-	g_vertexWk_text[0].diffuse = D3DCOLOR_RGBA(255, 255, 255, 255);
-	g_vertexWk_text[1].diffuse = D3DCOLOR_RGBA(255, 255, 255, 255);
-	g_vertexWk_text[2].diffuse = D3DCOLOR_RGBA(255, 255, 255, 255);
-	g_vertexWk_text[3].diffuse = D3DCOLOR_RGBA(255, 255, 255, 255);
+	g_vertexWk_text[0].diffuse = D3DCOLOR_RGBA(255, 255, 0, 255);
+	g_vertexWk_text[1].diffuse = D3DCOLOR_RGBA(255, 255, 0, 255);
+	g_vertexWk_text[2].diffuse = D3DCOLOR_RGBA(255, 255, 0, 255);
+	g_vertexWk_text[3].diffuse = D3DCOLOR_RGBA(255, 255, 0, 255);
 
 	// テクスチャ座標の設定
 	g_vertexWk_text[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -212,7 +212,7 @@ void SetTextureUI_size(void)
 {
 	int i;
 	int number = g_UI_size;
-	int irokae = g_UI_size;
+	float irokae = g_UI_size/2;
 
 	if (irokae > 255)
 	{
@@ -230,16 +230,16 @@ void SetTextureUI_size(void)
 		number /= 10;
 
 		// 反射光の設定
-		g_vertexWk_num[i][0].diffuse = D3DCOLOR_RGBA(255, 255 - irokae, 255 - irokae, 255);
-		g_vertexWk_num[i][1].diffuse = D3DCOLOR_RGBA(255, 255 - irokae, 255 - irokae, 255);
-		g_vertexWk_num[i][2].diffuse = D3DCOLOR_RGBA(255, 255 - irokae, 255 - irokae, 255);
-		g_vertexWk_num[i][3].diffuse = D3DCOLOR_RGBA(255, 255 - irokae, 255 - irokae, 255);
+		g_vertexWk_num[i][0].diffuse = D3DCOLOR_RGBA(255, 255 - (int)irokae, 255 - (int)irokae, 255);
+		g_vertexWk_num[i][1].diffuse = D3DCOLOR_RGBA(255, 255 - (int)irokae, 255 - (int)irokae, 255);
+		g_vertexWk_num[i][2].diffuse = D3DCOLOR_RGBA(255, 255 - (int)irokae, 255 - (int)irokae, 255);
+		g_vertexWk_num[i][3].diffuse = D3DCOLOR_RGBA(255, 255 - (int)irokae, 255 - (int)irokae, 255);
 
 	}
 
 }
 //=============================================================================
-// HPデータをセットする
+// 大きさデータをセットする
 // 引数:add :追加する点数。マイナスも可能、初期化などに。
 //=============================================================================
 void AddUI_size(int add)
