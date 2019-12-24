@@ -32,7 +32,7 @@ typedef struct GAME_ITEM_DATA {
 	ENTITY_ITEM			*bot_pt;			// 終端ポインタ			
 	CSV_FILE			*ItemPopTbl;		// CSVのテーブル
 	int					TblIdx;				// 最後に出現させたテーブルの行
-	DWORD				tItv;				// 前回出現したときからのじかん
+	int					tItv;				// 前回出現したときからのじかん
 	DWORD				tLast;				// 前フレーム時の時刻
 	void				(*Update)(void);	// 更新関数ポインタ
 }GAME_ITEM_DATA;
@@ -131,7 +131,7 @@ HRESULT InitGameItem(void)
 	// ポップテーブルの読み込み
 	if (FAILED(CreateCSVFromFile(ITEM_TBL, (char *)"dfddd",
 		CSV_CELRANGE{ 0, 1, 0, 0 },
-		&g_pItemData->ItemPopTbl, CSV_OPTION_SHOWALL)))
+		&g_pItemData->ItemPopTbl/*, CSV_OPTION_SHOWALL*/)))
 	// エラー
 	{
 		MessageBox(NULL, _T("初期化csvチェック"), _T("GAMEITEM"), NULL);
@@ -171,9 +171,14 @@ void UpdateGameItemAfterGameStart(void)
 	g_pItemData->tLast = tNow;						// 上で求めだ時刻の代入
 
 	// 間隔時刻がポップ間隔時刻を超えていた場合
-	while (true)
+	while(true)
 	{
-		if (_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx + 1, 0)._int < g_pItemData->tItv)
+		if (g_pItemData->TblIdx + 1 >= g_pItemData->ItemPopTbl->Line_Size)
+		{
+			g_pItemData->TblIdx = -1;
+		}
+
+		if (_ARRAY(g_pItemData->ItemPopTbl, g_pItemData->TblIdx + 1, 0)._int <= g_pItemData->tItv)
 		{
 			// INTERVAL時間から引く
 			g_pItemData->tItv -= _ARRAY(g_pItemData->ItemPopTbl, ++g_pItemData->TblIdx, 0)._int;
@@ -320,6 +325,7 @@ void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus)
 	else
 	{
 		g_pItemData->bot_pt->next_pt = work_pt;
+		g_pItemData->bot_pt = work_pt;
 	}
 
 	// 数値の代入
