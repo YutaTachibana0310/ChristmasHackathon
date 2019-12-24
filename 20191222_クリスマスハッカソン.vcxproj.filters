@@ -108,6 +108,10 @@
     <ClCompile Include="GameItem.cpp" />
     <ClCompile Include="CSV_Reader.cpp" />
     <ClCompile Include="GameItem_Ai.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="GameBG.cpp" />
+    <ClCompile Include="Road.cpp" />
+    <ClCompile Include="Effect\RoadEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -239,5 +243,9 @@
     <ClInclude Include="GameItem.h" />
     <ClInclude Include="CSV_Reader.h" />
     <ClInclude Include="GameItem_Ai.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="GameBG.h" />
+    <ClInclude Include="Road.h" />
+    <ClInclude Include="Effect\RoadEffect.h" />
   </ItemGroup>
 </Project>
