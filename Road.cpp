@@ -76,7 +76,7 @@ RoadBG::~RoadBG()
 void RoadBG::Update()
 {
 	offset = Math::WrapAround(0.0f, 1.0f, offset += 0.05f);
-	effect->SetUV({ 0.0f, offset });
+	effect->SetUV(	{ 0.0f, offset });
 }
 
 /**************************************
