@@ -8,6 +8,7 @@
 #include "GameScene.h"
 
 #include "Framework/Camera/Camera.h"
+#include "Framework\Collider\ColliderManager.h"
 
 #include "Player.h"
 #include "GameBG.h"
@@ -51,6 +52,9 @@ void GameScene::Update()
 	UpdatePlayer();
 	UpdateRoad();
 	UpdateCreamRoad();
+
+	//“–‚½‚è”»’è
+	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
 }
 
 /**************************************

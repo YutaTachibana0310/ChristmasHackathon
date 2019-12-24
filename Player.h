@@ -9,6 +9,7 @@
 #define _PLAYER_H_
 
 #include "main.h"
+#include "Framework\Collider\ColliderObserver.h"
 
 /**************************************
 プロトタイプ宣言
@@ -28,7 +29,7 @@ class BoxCollider3D;
 /**************************************
 クラス定義
 ***************************************/
-class Player : public GameObject
+class Player : public GameObject, public ColliderObserver
 {
 public:
 	Player();
@@ -37,6 +38,8 @@ public:
 	void Update();
 	void Draw();
 
+	void OnColliderHit(ColliderObserver *other) override;
+
 private:
 	MeshContainer * mesh;
 
@@ -44,6 +47,8 @@ private:
 	float scaleCream;
 
 	std::shared_ptr<BoxCollider3D> collider;
+
+	bool isHitCream;
 };
 
 class PlayerCream : public GameObject

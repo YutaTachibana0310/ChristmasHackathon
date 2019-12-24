@@ -56,7 +56,8 @@ void DrawPlayer()
 /**************************************
 コンストラクタ
 ***************************************/
-Player::Player()
+Player::Player() :
+	isHitCream(false)
 {
 	mesh = new MeshContainer();
 	ResourceManager::Instance()->GetMesh("Player", mesh);
@@ -69,6 +70,7 @@ Player::Player()
 
 	collider = BoxCollider3D::Create("Player", transform);
 	collider->SetSize({ 6.0f, 5.0f, 1.0f });
+	collider->AddObserver(this);
 }
 
 /**************************************
@@ -87,6 +89,16 @@ Player::~Player()
 void Player::Update()
 {
 	transform->Rotate(5.0f, Vector3::Right);
+
+	//クリームがヒットしていたら大きくなる
+	//していなければ小さく
+	//フラグを毎フレーム下ろす
+	float deltaSize = isHitCream ? 0.05f : -0.05f;
+	scaleCream = Math::Clamp(0.0f, 100.0f, scaleCream + deltaSize);
+	cream->SetScale({ 1.0f, scaleCream, scaleCream });
+	isHitCream = false;
+
+	//移動
 
 #ifdef _DEBUG
 	float deltaValue = 0.0f;
@@ -121,6 +133,15 @@ void Player::Draw()
 	cream->Draw(*transform);
 
 	collider->Draw();
+}
+
+/**************************************
+当たり判定
+***************************************/
+void Player::OnColliderHit(ColliderObserver *other)
+{
+	Debug::Log("Hit Player");
+	isHitCream = true;
 }
 
 /**************************************
