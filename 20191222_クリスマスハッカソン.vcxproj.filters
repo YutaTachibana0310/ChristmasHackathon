@@ -105,6 +105,9 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameSkybox.cpp" />
     <ClCompile Include="Framework\Renderer2D\TextOutline.cpp" />
+    <ClCompile Include="GameItem.cpp" />
+    <ClCompile Include="CSV_Reader.cpp" />
+    <ClCompile Include="GameItem_Ai.cpp" />
     <ClCompile Include="GameUI_size.cpp" />
     <ClCompile Include="GameUI_distance.cpp" />
     <ClCompile Include="Gameeffect.cpp" />
@@ -114,6 +117,9 @@
     <ClCompile Include="Effect\RoadEffect.cpp" />
     <ClCompile Include="CreamRoad.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="SnowParticle.cpp" />
+    <ClCompile Include="GameParticleManager.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -242,6 +248,9 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameSkybox.h" />
     <ClInclude Include="Framework\Renderer2D\TextOutLine.h" />
+    <ClInclude Include="GameItem.h" />
+    <ClInclude Include="CSV_Reader.h" />
+    <ClInclude Include="GameItem_Ai.h" />
     <ClInclude Include="GameUI_size.h" />
     <ClInclude Include="GameUI_distance.h" />
     <ClInclude Include="Gameeffect.h" />
@@ -251,5 +260,8 @@
     <ClInclude Include="Effect\RoadEffect.h" />
     <ClInclude Include="CreamRoad.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="SnowParticle.h" />
+    <ClInclude Include="GameParticleManager.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
 </Project>

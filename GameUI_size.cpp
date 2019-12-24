@@ -244,7 +244,7 @@ void SetTextureUI_size(void)
 //=============================================================================
 void AddUI_size(int add)
 {
-	g_UI_size += add;
+	g_UI_size = add;
 	if (g_UI_size > UI_SIZE_MAX)
 	{
 		g_UI_size = UI_SIZE_MAX;

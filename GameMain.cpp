@@ -9,6 +9,7 @@
 
 #include "GameConfig.h"
 #include "GameScene.h"
+#include "TitleScene.h"
 
 #include "Framework\Resource\FontManager.h"
 
@@ -24,8 +25,9 @@ GameMain::GameMain(HINSTANCE hInstance, HWND hWnd) :
 	FontManager::Instance()->LoadFont("data/FONT/mplus-2m-thin.ttf");
 
 	sceneManager->Add(GameConfig::GameScene, new GameScene(renderTexture, renderSurface));
+	sceneManager->Add(GameConfig::TitleScene, new TitleScene(renderTexture, renderSurface));
 
-	sceneManager->ChangeScene(GameConfig::GameScene);
+	sceneManager->ChangeScene(GameConfig::TitleScene);
 }
 
 /**************************************
