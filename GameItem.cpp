@@ -329,6 +329,7 @@ void UninitGameItem(void)
 
 	// ©•ª‚ğÁ‚·
 	free(g_pItemData);
+	g_pItemData = NULL;
 }
 
 
