@@ -30,6 +30,7 @@
 							ÇµÇƒÇ»Ç¢:false
 à¯êî Entity_ITEM *pData
 =====================================================================*/
+/*
 bool UpdateItemAI_NO(ENTITY_ITEM*pData)
 {
 	D3DXVECTOR3 vec;
@@ -46,4 +47,4 @@ bool UpdateItemAI_NO(ENTITY_ITEM*pData)
 	{
 		return false;
 	}
-}
+}*/
