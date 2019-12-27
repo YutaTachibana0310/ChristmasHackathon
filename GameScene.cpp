@@ -55,7 +55,7 @@ void GameScene::Init()
 	int type = TransitionType::HexaPop;
 	TransitionController::Instance()->SetTransition(true, TransitionType(type));
 
-	BGM::FadeIn(GameConfig::GameScene, 1.0f, 60, false);
+	BGM::FadeIn(GameConfig::GameScene, 0.0f, 60, false);
 }
 
 /**************************************
@@ -96,6 +96,7 @@ void GameScene::Update()
 
 	//“–‚½‚è”»’è
 	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
+	ColliderManager::Instance()->CheckRoundRobin("Player", "Item");
 
 	UpdateUI_size();
 	UpdateUI_distance();

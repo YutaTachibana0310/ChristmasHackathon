@@ -6,8 +6,17 @@
 ***********************************************************************/
 #include "GameItem.h"
 #include "GameItem_Ai.h"
-#include "CSV_Reader.h"
 #include "Gameeffect.h"
+#include <string>
+#include <stdio.h>
+// 当たり判定(多分）
+#include "Framework\Collider\BoxCollider3D.h"
+
+// データをまとめて参照とかできるかんじ(多分）
+#include "Framework\Resource\ResourceManager.h"
+#include "Framework\Tool\DebugWindow.h"
+#include "Framework\Core\ObjectPool.h"
+
 //---------------------------------------------------------------------
 //	マクロ定義(同cpp内限定)
 //---------------------------------------------------------------------
@@ -18,65 +27,42 @@
 #define ITEM_TBL	_T("data/GIMMICK/GameItemTbl.csv")
 
 // しゅつげんｚ(仮）
-#define POP_Z		(1500.0f)
-#define MAX_ITEM	(300)
+#define POP_Z		(2500.0f)
+
+// アイテムのエフェクト位置をスクリーンにする
+#define IS_ITEM_EFFECT_POS_SCREEN	(true)
+
+#if IS_ITEM_EFFECT_POS_SCREEN
+#define EFFECT_POS_SCREEN	D3DXVECTOR3(SCREEN_CENTER_X,SCREEN_CENTER_Y+100.0f,0.0f)
+#endif
+
+#define IS_ITEMDEBUG	(false)
+#define IS_ITEMCHECKNUM_DEBUG	(false)
 //---------------------------------------------------------------------
 //	構造体、列挙体、共用体宣言(同cpp内限定)
 //---------------------------------------------------------------------
-
-typedef struct GAME_TBL {
-	int tItv;
-	float X;
-	int Ai;
-	int Tex;
-	bool bPlus;
-}GAME_TBL;
-
-typedef struct GAME_ITEM_DATA {
-	LPDIRECT3DTEXTURE9		pTex[MAX_TEXTYPE];	// アイテムで使用する総テクスチャ
-	LPDIRECT3DVERTEXBUFFER9	pVtx;				// アイテムで使用されるであろう頂点様
-	ENTITY_ITEM			item[MAX_ITEM];			// 開始ポインタ	
-	//CSV_FILE			*ItemPopTbl;		// CSVのテーブル
-	int					TblIdx;				// 最後に出現させたテーブルの行
-	int					tItv;				// 前回出現したときからのじかん
-	DWORD				tLast;				// 前フレーム時の時刻
-	int					tblsize;
-	void				(*Update)(void);	// 更新関数ポインタ
-}GAME_ITEM_DATA;
-
+using namespace std;
 //---------------------------------------------------------------------
 //	プロトタイプ宣言(同cpp内限定)
 //---------------------------------------------------------------------
-void UpdateGameItemBeforeGameStart(void);
-void UpdateGameItemAfterGameStart(void);
-void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus);
-void DeleteItem(ENTITY_ITEM* item);
 
-void *ReferenceItemAI(ITEM_AI_TYPE Ai);
 //---------------------------------------------------------------------
 //	グローバル変数
 //---------------------------------------------------------------------
-static GAME_ITEM_DATA *g_pItemData = NULL;
-int num_item = 0;
+static Item *g_item = NULL;
 
-GAME_TBL tbl[] =
+/*=====================================================================
+ゲームアイテムの時間スタート関数
+これを使用するとゲームが開始されます
+戻り値：void
+引数:void
+=====================================================================*/
+void StartGameItemTime(void)
 {
-{1000 ,-50,	0,	0	,1},
-{0, 50, 0, 0, 1},
-{1000, -50, 0, 0, 0},
-{0, 50, 0, 0, 0},
-{800, -40, 0, 0, 0},
-{0, 40, 0, 0, 0},
-{800, -35, 0, 0, 1},
-{0, 35, 0, 0, 1},
-{1000, -20, 0, 0, 1},
-{0, -40, 0, 0, 1},
-{1000, -50, 0, 0, 0},
-{0, 50, 0, 0, 0},
-{0, 10, 0, 0, 0},
-{500, 30, 0, 0, 1},
+	if (g_item == NULL)return;
+	g_item->ResetGame();
+}
 
-};
 /*=====================================================================
 ゲームアイテム初期化関数
 戻り値：HRESULT
@@ -84,227 +70,16 @@ GAME_TBL tbl[] =
 =====================================================================*/
 HRESULT InitGameItem(void)
 {
-	D3DDEVICE(pDevice);	// デバイス
-	HRESULT hr = S_OK;	// 結果表示
-	// テクスチャのアドレス
-	const char *const filename[MAX_TEXTYPE] =
+	if (g_item != NULL)
 	{
-		_T("Data/TEXTURE/Item/pipo-tr004.png"),
-		_T("Data/TEXTURE/Item/BULLET.png"),
-	};
-
-	// ヌルチェック
-	if (g_pItemData != NULL)
-	{
-		MessageBox(NULL, _T("初期化ヌルチェック"), _T("GAMEITEM"), NULL);
+		MessageBox(NULL, _T("Itemクラスのインスタンスが存在しています"), _T("GAMEITEM--ERROR--"), NULL);
 		return E_FAIL;
 	}
 
-	// アイテムのメモリかくほ
-	g_pItemData = (GAME_ITEM_DATA*)calloc(1, sizeof(GAME_ITEM_DATA));
+	// クラスのコンストラクタ
+	g_item = new Item();
 
-	// テクスチャの確保
-	for (int i = 0; i < MAX_TEXTYPE; i++)
-	{
-		// 読みこみ
-		hr = D3DXCreateTextureFromFile(pDevice, filename[i], &g_pItemData->pTex[i]);
-
-		// エラー
-		if (FAILED(hr))
-		{
-			MessageBox(NULL, _T("初期化テクスチャチェック"), _T("GAMEITEM"), NULL);
-			return E_FAIL;
-		}
-	}
-
-	// 頂点の作成
-	{
-		// 頂点の作成
-		hr = pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * NUM_VERTEX,
-			D3DUSAGE_WRITEONLY,
-			FVF_VERTEX_3D,
-			D3DPOOL_MANAGED,
-			&g_pItemData->pVtx,
-			NULL);
-		// エラー
-		if (FAILED(hr))
-		{
-			MessageBox(NULL, _T("初期化頂点作成チェック"), _T("GAMEITEM"), NULL);
-			return E_FAIL;
-		}
-
-		// 変更のない頂点はあらかじめ設定を行う
-		{
-			VERTEX_3D	*pvtx = NULL;
-
-			hr = g_pItemData->pVtx->Lock(0, 0, (void**)&pvtx, 0);		// ロック
-
-			for (int i = 0; i < NUM_VERTEX; i++)
-			{
-				pvtx[i].diffuse = D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0xff);
-				pvtx[i].nor = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-				pvtx[i].tex = D3DXVECTOR2(1.0f*(i % 2), 1.0f*(i / 2));
-			}
-			pvtx[0].vtx = D3DXVECTOR3(-ITEM_SIZE_X, ITEM_SIZE_Y*2, 0.0f);
-			pvtx[1].vtx = D3DXVECTOR3(ITEM_SIZE_X, ITEM_SIZE_Y*2, 0.0f);
-			pvtx[2].vtx = D3DXVECTOR3(-ITEM_SIZE_X, 0.0f, 0.0f);
-			pvtx[3].vtx = D3DXVECTOR3(ITEM_SIZE_X, 0.0f, 0.0f);
-
-			hr = g_pItemData->pVtx->Unlock();							// ロック解除
-		}
-	}
-
-/*
-	// ポップテーブルの読み込み
-	if (FAILED(CreateCSVFromFile(ITEM_TBL, (char *)"dfddd",
-		CSV_CELRANGE{ 0, 1, 0, 0 },
-		&g_pItemData->ItemPopTbl/*, CSV_OPTION_SHOWALL*///)))
-	// エラー
-//	{/*
-	//	MessageBox(NULL, _T("初期化csvチェック"), _T("GAMEITEM"), NULL);
-	//	return E_FAIL;
-//	}*/
-	
-	// もろもろのステータス指定
-	g_pItemData->Update = UpdateGameItemBeforeGameStart;	// 更新関数ポインタ
-	g_pItemData->TblIdx = -1;								// インデックスを0xff..に
-	g_pItemData->tblsize = sizeof tbl / sizeof(GAME_TBL);
 	return S_OK;
-}
-
-/*=====================================================================
-ゲームアイテム更新(ゲーム開始前)関数
-戻り値：void
-引数:void
-=====================================================================*/
-void UpdateGameItemBeforeGameStart(void)
-{
-	// 何もしない(予定)
-	return;
-}
-
-/*=====================================================================
-ゲームアイテム更新(ゲーム開始後)関数
-ここに更新を書く
-戻り値：void
-引数:void
-=====================================================================*/
-void UpdateGameItemAfterGameStart(void)
-{
-	DWORD tNow;
-	ENTITY_ITEM *work_pt;
-	// 時刻のカウント
-	tNow = timeGetTime();							// 時刻の取得
-	g_pItemData->tItv += tNow - g_pItemData->tLast;	// 間隔の算出及び加算
-	g_pItemData->tLast = tNow;						// 上で求めだ時刻の代入
-
-													// 間隔時刻がポップ間隔時刻を超えていた場合
-	while (true)
-	{
-		if (g_pItemData->TblIdx + 1 >=g_pItemData-> tblsize)
-		{
-			g_pItemData->TblIdx = -1;
-		}
-	//	sprintf_s(str, "%d", tbl[g_pItemData->TblIdx + 1].tItv);
-	//	MessageBox(NULL, str, NULL, NULL);
-		if (tbl[g_pItemData->TblIdx + 1].tItv <= g_pItemData->tItv)
-		{
-			// INTERVAL時間から引く
-			g_pItemData->tItv -= tbl[++g_pItemData->TblIdx ].tItv;
-			//g_pItemData->tItv = 0;
-			// アイテムの設置
-			SetItem(tbl[g_pItemData->TblIdx].X,
-				(ITEM_AI_TYPE)tbl[g_pItemData->TblIdx].Ai,
-				(ITEM_TEX_TYPE)tbl[g_pItemData->TblIdx].Tex,
-				tbl[g_pItemData->TblIdx].bPlus);
-		}
-		else break;
-	}
-
-	for (int i = 0; i < MAX_ITEM; i++)
-	{
-		if (g_pItemData->item[i].isUse == false)continue;
-		if (g_pItemData->item[i].UpdateEachGameItem(&g_pItemData-> item[i]))
-		{
-			SetEffect(g_pItemData->item[i].pos, UP);
-			if (g_pItemData->item[i].bPlus == true)num_item++;
-			else num_item--;
-
-			g_pItemData->item[i].isUse = false;
-
-		}
-		if (g_pItemData->item[i].pos.z <= -40.0f)
-		{
-			g_pItemData->item[i].isUse = false;
-		}
-
-	}
-	return;
-}
-/*=====================================================================
-ゲームアイテム更新関数
-戻り値：void
-引数:void
-=====================================================================*/
-void UpdateGameItem(void)
-{
-	// 関数ポインタで指定する
-	g_pItemData->Update();
-}
-
-/*=====================================================================
-ゲームアイテム描画関数
-戻り値：void
-引数:void
-=====================================================================*/
-void DrawGameItem(void)
-{
-	D3DDEVICE(pDevice);
-	D3DXMATRIX	mtxWorld;
-	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
-
-	// 頂点データの設定(一つしか使わない)
-	pDevice->SetStreamSource(0, g_pItemData->pVtx, 0, sizeof(VERTEX_3D));
-
-	// ラインティングを無効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, false);
-
-	// ヌルまでやる
-for(int i=0;i<MAX_ITEM;i++)
-{
-	if (g_pItemData->item[i].isUse == false)continue;
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&mtxWorld);
-
-		// スケールを反映
-		D3DXMatrixScaling(&mtxScl, g_pItemData->item[i].scl.x, g_pItemData->item[i].scl.y, g_pItemData->item[i].scl.z);
-		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScl);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_pItemData->item[i].rot.y, g_pItemData->item[i].rot.x, g_pItemData->item[i].rot.z);
-		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
-
-		// 移動を反映
-		D3DXMatrixTranslation(&mtxTranslate, g_pItemData->item[i].pos.x, g_pItemData->item[i].pos.y, g_pItemData->item[i].pos.z);
-		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTranslate);
-		
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
-		// テクスチャの繁栄
-		pDevice->SetTexture(0, g_pItemData->item[i].pTex);
-
-		// 描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
-		
-	}
-
-	// ラインティングをyuukou にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 }
 
@@ -315,95 +90,482 @@ for(int i=0;i<MAX_ITEM;i++)
 =====================================================================*/
 void UninitGameItem(void)
 {
-	// ヌルチェック
-	if (g_pItemData == NULL)return;
+	// クラスのデストラクタ
+	SAFE_DELETE(g_item);
+}
 
-	// csvの開放
-	//SAFE_RELEASE(g_pItemData->ItemPopTbl);
+/*=====================================================================
+ゲームアイテム更新関数
+戻り値：void
+引数:void
+=====================================================================*/
+void UpdateGameItem(void)
+{
+	g_item->Update();
+}
+
+/*=====================================================================
+ゲームアイテム描画関数
+戻り値：void
+引数:void
+=====================================================================*/
+void DrawGameItem(void)
+{
+	g_item->Draw();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// Itemクラス
+/////////////////////////////////////////////////////////////////////////////////
+
+/*=====================================================================
++Item::コンストラクタ関数
+引数: void
+=====================================================================*/
+Item::Item() :pVtx(0), li_Item(0), CSV_Data(0), CSV_idx(-1), tItv(0), minus(0), plus(0)
+{
+	// テクスチャの読み込み
+	for (int i = 0; i < ITEM_TEXTURE::MAX_ITEMTEXTURE; i++)
+	{
+		ResourceManager::Instance()->LoadTexture(GetTexFileAddress((ITEM_TEXTURE)i).c_str());
+	}
+
+	// 頂点の作成
+	{
+		D3DDEVICE(pDevice);
+		// 頂点の作成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * NUM_VERTEX,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_3D,
+			D3DPOOL_MANAGED,
+			&pVtx,
+			NULL);
+
+		// 変更のない頂点はあらかじめ設定を行う
+		{
+			VERTEX_3D	*pvtx = NULL;
+
+			pVtx->Lock(0, 0, (void**)&pvtx, 0);		// ロック
+
+			for (int i = 0; i < NUM_VERTEX; i++)
+			{
+				pvtx[i].diffuse = D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0xff);
+				pvtx[i].nor = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+				pvtx[i].tex = D3DXVECTOR2(1.0f*(i % 2), 1.0f*(i / 2));
+			}
+			pvtx[0].vtx = D3DXVECTOR3(-ITEM_SIZE_X, ITEM_SIZE_Y * 2, 0.0f);
+			pvtx[1].vtx = D3DXVECTOR3(ITEM_SIZE_X, ITEM_SIZE_Y * 2, 0.0f);
+			pvtx[2].vtx = D3DXVECTOR3(-ITEM_SIZE_X, 0.0f, 0.0f);
+			pvtx[3].vtx = D3DXVECTOR3(ITEM_SIZE_X, 0.0f, 0.0f);
+
+			pVtx->Unlock();							// ロック解除
+		}
+	}
+
+	
+	// ポップテーブルの読み込み(エラーの表示はあり)
+	CreateCSVFromFile(ITEM_TBL, (char *)"dfddd",
+		CSV_CELRANGE{ 0, 1, 0, 0 },
+		&CSV_Data, CSV_OPTION_SHOWERR);
+
+#if IS_ITEMDEBUG
+	string str;
+	for (int i = 0; i < CSV_Data->Line_Size; i++)
+	{
+		string line = to_string(i) + "行目:";
+		str += line;
+		for (int j = 0; j < CSV_Data->Column_Size; j++)
+		{
+			string column;
+			if (*(CSV_Data->TypeArray + j) == CSV_INT)
+			{
+				column = "[" + to_string(_ARRAY(CSV_Data, i, j)._int) + "]";
+			}
+			else
+			{
+				column = "[" + to_string(_ARRAY(CSV_Data, i, j)._float) + "]";
+			}
+			str += column;
+		}
+		str += "\n";
+	}
+	MessageBox(NULL, str.c_str(), NULL, NULL);
+#endif
+
+	// 仮で現在の時刻を挿入
+	tLast = timeGetTime();
+
+}
+
+/*=====================================================================
++Item::デストラクタ関数
+引数: void
+=====================================================================*/
+Item::~Item()
+{
+	SAFE_RELEASE(CSV_Data);
 
 	// テクスチャの開放
-	for (int i = 0; i < MAX_TEXTYPE; i++)
+	for (int i = 0; i < ITEM_TEXTURE::MAX_ITEMTEXTURE; i++)
 	{
-		SAFE_RELEASE(g_pItemData->pTex[i]);
+		ResourceManager::Instance()->ReleaseTexture(GetTexFileAddress((ITEM_TEXTURE)i).c_str());
 	}
 
-	// 自分を消す
-	free(g_pItemData);
-	g_pItemData = NULL;
-}
-
-
-/*=====================================================================
-ゲームアイテムの時間スタート関数
-これを使うと時間が進みます☆
-戻り値：void
-引数:void
-=====================================================================*/
-void StartGameItemTime(void)
-{
-	if (g_pItemData == NULL)return;
-	g_pItemData->tItv	= 0;
-	g_pItemData->tLast	= timeGetTime();	// 時刻の取得
-	g_pItemData->Update = UpdateGameItemAfterGameStart;
-	g_pItemData->TblIdx = -1;								// インデックスを0xff..に
 
 }
 
 /*=====================================================================
-ゲームアイテム	セット関数(同cpp専用)
++Item::更新関数
 戻り値：void
-引数:void
+引数: void
 =====================================================================*/
-void SetItem(float X, ITEM_AI_TYPE Ai, ITEM_TEX_TYPE Tex, bool bPlus)
+void Item:: Update()
 {
-	int i = 0;
-	while (i < MAX_ITEM)
+	DWORD tNow;
+	// 時刻のカウント
+	tNow = timeGetTime();				// 時刻の取得
+	tItv += tNow - tLast;				// 間隔の算出及び加算
+	tLast = tNow;						// 上で求めだ時刻の代入
+
+#if IS_ITEMDEBUG
+	string str;
+	for (int i = 0; i < CSV_Data->Line_Size; i++)
 	{
-		if (g_pItemData->item[i].isUse == FALSE)break;
-		i++;
+		string line = to_string(i) + "行目:";
+		str += line;
+		for (int j = 0; j < CSV_Data->Column_Size; j++)
+		{
+			string column;
+			if (*(CSV_Data->TypeArray + j) == CSV_INT)
+			{
+				column = "[" + to_string(_ARRAY(CSV_Data, i, j)._int) + "]";
+			}//_ARRAY(CSV_Data, CSV_idx + 1, 0)._int
+			else
+			{
+				column = "[" + to_string(_ARRAY(CSV_Data, i, j)._float) + "]";
+			}
+			str += column;
+		}
+		str += "\n";
 	}
-	if (i >= MAX_ITEM)return;
+	MessageBox(NULL, str.c_str(), NULL, NULL);
+#endif
 
-	g_pItemData->item[i].isUse = true;
-	// 数値の代入
-	g_pItemData->item[i].pos = D3DXVECTOR3(X, ITEM_SIZE_Y, POP_Z);
-	g_pItemData->item[i].scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	g_pItemData->item[i].bPlus = bPlus;
-	if (bPlus)
+
+	// ポップ処理
+	while (true)
 	{
-		g_pItemData->item[i].pTex = g_pItemData->pTex[1];
+		if (CSV_idx + 1 >= CSV_Data->Line_Size)
+		{
+			CSV_idx = -1;
+		}
+#if IS_ITEMCHECKNUM_DEBUG
+		string line_str = to_string(_ARRAY(CSV_Data, (CSV_idx + 1), 0)._int) + ":" + to_string(CSV_idx)
+			+":"+to_string(CSV_Data->Column_Size);
+		MessageBox(NULL, line_str.c_str(), NULL, NULL);
+#endif
+		
+		if (_ARRAY(CSV_Data, (CSV_idx + 1), 0)._int <= tItv)
+		{
+			// INTERVAL時間から引く
+			tItv -= _ARRAY(CSV_Data, ++CSV_idx, 0)._int;
 
+			// アイテムの設置
+			SetGameItem(_ARRAY(CSV_Data, CSV_idx, 1)._float,
+				(ITEM_TEXTURE)_ARRAY(CSV_Data, CSV_idx, 2)._int,
+				(ITEM_CLASS)_ARRAY(CSV_Data, CSV_idx, 3)._int,
+				_ARRAY(CSV_Data, CSV_idx, 4)._int);
+		}
+		else break;
+	}
+
+	// 全リスト操作
+	for (list <GameItem *>::iterator itr = li_Item.begin(); itr != li_Item.end();)
+	{
+		(*itr)->CheckDeleteByPos();
+
+		if (!(*itr)->GetisShow())
+		{
+			(*itr)->LastWord(this);
+		}
+
+		(*itr)->EachItemUpdate();
+		if ((*itr)->GetisDelete())
+		{
+			// 削除処理
+			//SAFE_DELETE(*itr);
+			ObjectPool::Instance()->Destroy(*itr);
+			(*itr) = NULL;
+			itr = li_Item.erase(itr);
+		}	
+		else ++itr;
+		
+	}
+
+}
+
+/*=====================================================================
++Item::描画関数
+戻り値：void
+引数: void
+=====================================================================*/
+void Item::Draw()
+{
+	D3DDEVICE(pDevice);
+	list <GameItem *>::iterator itr;
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	// 頂点データの設定(一つしか使わない)
+	pDevice->SetStreamSource(0, pVtx, 0, sizeof(VERTEX_3D));
+
+	// ラインティングを無効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+	// 全リスト操作
+	for (list <GameItem *>::iterator itr = li_Item.begin(); itr != li_Item.end(); itr++)
+	{
+		if (!(*itr)->GetisShow())continue;
+
+		(*itr)->EachItemDraw();	
+	}
+
+	// ラインティングを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, true);
+}
+
+/*=====================================================================
++Item::ゲームリセット関数
+戻り値：void
+引数: void
+=====================================================================*/
+void Item::ResetGame()
+{
+	CSV_idx = -1;
+	tItv = minus = plus = 0;
+	tLast = timeGetTime();
+
+	for (list <GameItem *>::iterator itr = li_Item.begin(); itr != li_Item.end();itr++)
+	{
+		ObjectPool::Instance()->Destroy(*itr);
+		itr=li_Item.erase(itr);
+		
+	}
+
+}
+
+/*=====================================================================
+-Item::テクスチャファイルアドレス取得関数
+戻り値：
+const char * const	: 帰ってくるファイル
+引数:Tex			: 調べたいテクスチャの種類
+=====================================================================*/
+std::string Item::GetTexFileAddress(ITEM_TEXTURE Tex)
+{
+	const char* const filename[ITEM_TEXTURE::MAX_ITEMTEXTURE] = {
+		{"data/TEXTURE/Item/pipo-tr004.png"},
+		{"data/TEXTURE/Item/BULLET.png"}
+	};
+
+	return std::string(filename[Tex]);
+}
+
+
+/*=====================================================================
+-Item::ゲームアイテム関数
+戻り値：void
+引数:
+float X,			:X値
+ITEM_TEXTURE Tex,	:テクスチャ
+ITEM_CLASS Class,	:使用クラス
+bool bPlus,			:プラスアイテムかどうか
+...					:クラスによって使用するステータス
+=====================================================================*/
+void Item::SetGameItem(float X, ITEM_TEXTURE Tex, ITEM_CLASS Class, bool bPlus,...)
+{
+	GameItem *item;
+
+	// 継承クラスの設定
+	switch (Class)
+	{
+	case DEFAULT_ITEMCLASS:
+	case MAX_AITYPE:
+	default:
+		item = ObjectPool::Instance()->Create<GameItem>();
+		break;
+	}
+
+	// 初期化
+	item->Init();
+
+	// テクスチャの設定
+	LPDIRECT3DTEXTURE9 tex;
+	ResourceManager::Instance()-> GetTexture(GetTexFileAddress(Tex).c_str(), tex);
+	item->SetTexture(tex);
+
+	// 位置
+	item->SetPosition(D3DXVECTOR3(X, 0.0f, POP_Z));
+	item->SetItemPlus(bPlus);
+
+	li_Item.push_back(item);	// リストの追加
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// GameItemクラス
+/////////////////////////////////////////////////////////////////////////////////
+
+/*=====================================================================
++GameItem::コンストラクタ関数
+引数: void
+=====================================================================*/
+GameItem::GameItem() :isPlus(0), isShow(true), isDelete(false)
+{
+	collider = BoxCollider3D::Create("Item", transform);
+	collider->SetSize({ ITEM_SIZE_X * 2, ITEM_SIZE_Y * 2, 0.0f });
+	collider->AddObserver(this);
+//	SetEffect(D3DXVECTOR3(SCREEN_CENTER_X, SCREEN_CENTER_Y, 0), DOWN);	// デバッグ用
+
+}
+
+/*=====================================================================
++GameItem::デストラクタ関数
+引数: void
+=====================================================================*/
+GameItem::~GameItem()
+{
+	collider.reset();
+}
+
+/*=====================================================================
++GameItem::初期化関数
+引数: void
+=====================================================================*/
+void GameItem::Init()
+{
+	Init_sp();
+	isPlus = false;
+	isShow = true;
+	isDelete = false;
+	SetActive(true);
+}
+
+/*=====================================================================
++GameItem::更新関数
+
+引数: void
+=====================================================================*/
+void GameItem::EachItemUpdate()
+{
+}
+
+/*=====================================================================
++GameItem::消滅時効果発動関数
+戻り値:void
+引数: Item * item:アイテムクラス
+=====================================================================*/
+void GameItem::LastWord(Item * item)
+{
+	if (isPlus)
+	{
+#if IS_ITEM_EFFECT_POS_SCREEN
+		SetEffect(EFFECT_POS_SCREEN, UP);
+#else
+		SetEffect(transform->GetPosition(), UP);
+#endif
+		item->CountPlus();
 	}
 	else
 	{
-		g_pItemData->item[i].pTex = g_pItemData->pTex[0];
-
+#if IS_ITEM_EFFECT_POS_SCREEN
+		SetEffect(EFFECT_POS_SCREEN, DOWN);
+#else
+		SetEffect(transform->GetPosition(), DOWN);
+#endif
+		item->CountMinus();
 	}
-	g_pItemData->item[i].UpdateEachGameItem = (bool(*)(ENTITY_ITEM*))ReferenceItemAI(Ai);
+
+	SetActive(false);
+	isDelete = true;
+	isShow = true;
 
 }
-
 
 /*=====================================================================
-ゲームアイテム	参照関数(同cpp専用)
-戻り値：void
-引数:ITEM_AI_TYPE Ai		参照したい番号を指定
++GameItem::描画関数
+	描画を行う
+引数: void
 =====================================================================*/
-void *ReferenceItemAI(ITEM_AI_TYPE Ai)
+void GameItem::EachItemDraw()
 {
-	switch (Ai)
+	D3DDEVICE(pDevice);
+	transform->SetWorld();											// ワールド行列を設定
+	pDevice->SetTexture(0, pD3DTexture);							// テクスチャの繁栄
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);	// 描画
+
+	collider->Draw();
+}
+
+/*=====================================================================
++GameItem::エリア外削除関数
+	ポジション判定による削除フラグを立てる
+引数: void
+=====================================================================*/
+void GameItem::CheckDeleteByPos()
+{
+	D3DXVECTOR3 pos = transform->GetPosition();
+	pos.z -= ITEM_SPD;
+
+	transform->SetPosition(pos);
+	if (pos.z <= -400.0f)
 	{
-	case NO_AI:
-		return (void*)UpdateItemAI_NO;
-		break;
-	case MAX_AITYPE:
-	default:
-		return NULL;
-		break;
+		//MessageBox(NULL, "エリア外", NULL, NULL);
+		isShow = false;
+		isDelete = true;
+		SetActive(false);
 	}
 }
 
-int GetNumItems(void)
+/*=====================================================================
++GameItem::当たり判定関数
+戻り値:void
+引数: ColliderObserver *other　: 衝突した相方
+=====================================================================*/
+void GameItem::OnColliderHit(ColliderObserver *other)
 {
-	return num_item;
+	if (!isShow)return;
+	else isShow = false;
+
+	{
+		D3DXVECTOR3 pos = transform->GetPosition();
+		Debug::Log("Hit ITEM =Pos(%f,%f,%f)", pos.x, pos.y, pos.z);
+	}
+
+
+	//MessageBox(NULL, "当たり判定", NULL, NULL);
+//	LastWord();	
 }
+
+/*=====================================================================
++GameItem::テクスチャ設置関数
+戻り値:void
+引数: LPDIRECT3DTEXTURE9 pTex :テクスチャ
+=====================================================================*/
+void GameItem::SetTexture(LPDIRECT3DTEXTURE9 pTex)
+{
+	pD3DTexture = pTex;
+}
+
+/*=====================================================================
+-GameItem::初期化（特別）
+戻り値:void
+引数: void
+=====================================================================*/
+void GameItem::Init_sp()
+{
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
