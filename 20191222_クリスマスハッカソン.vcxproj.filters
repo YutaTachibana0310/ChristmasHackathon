@@ -120,6 +120,7 @@
     <ClCompile Include="SnowParticle.cpp" />
     <ClCompile Include="GameParticleManager.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="FinishTelop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
@@ -263,5 +264,6 @@
     <ClInclude Include="SnowParticle.h" />
     <ClInclude Include="GameParticleManager.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="FinishTelop.h" />
   </ItemGroup>
 </Project>

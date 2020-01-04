@@ -129,6 +129,7 @@
     <ClCompile Include="CSV_Reader.cpp" />
     <ClCompile Include="CreamRoad.cpp" />
     <ClCompile Include="Effect\RoadEffect.cpp" />
+    <ClCompile Include="FinishTelop.cpp" />
     <ClCompile Include="Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Framework\Animation\AnimContainer.cpp" />
     <ClCompile Include="Framework\Animation\MyAllocateHierarchy.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="CSV_Reader.h" />
     <ClInclude Include="CreamRoad.h" />
     <ClInclude Include="Effect\RoadEffect.h" />
+    <ClInclude Include="FinishTelop.h" />
     <ClInclude Include="Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Framework\Animation\AnimContainer.h" />
     <ClInclude Include="Framework\Animation\MyAllocateHierarchy.h" />

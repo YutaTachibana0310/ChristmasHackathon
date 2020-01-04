@@ -45,6 +45,9 @@ Polygon2D::~Polygon2D()
 ***************************************/
 void Polygon2D::Draw()
 {
+	if (!active)
+		return;
+
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	pDevice->SetTexture(0, texture);

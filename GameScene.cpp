@@ -55,7 +55,7 @@ void GameScene::Init()
 	int type = TransitionType::HexaPop;
 	TransitionController::Instance()->SetTransition(true, TransitionType(type));
 
-	BGM::FadeIn(GameConfig::GameScene, 0.0f, 60, false);
+	BGM::FadeIn(GameConfig::GameScene, 1.0f, 60, false);
 }
 
 /**************************************
