@@ -14,6 +14,7 @@
 /**************************************
 前方宣言
 ***************************************/
+class FinishTelop;
 
 /**************************************
 クラス定義
@@ -31,5 +32,7 @@ private:
 	float distance;
 
 	bool inGame;
+
+	FinishTelop *finishTelop;
 };
 #endif

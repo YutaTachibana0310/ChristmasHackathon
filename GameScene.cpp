@@ -24,6 +24,7 @@
 #include "CreamRoad.h"
 #include "GameParticleManager.h"
 #include "GameConfig.h"
+#include "FinishTelop.h"
 
 #include "title.h"
 
@@ -34,6 +35,8 @@ void GameScene::Init()
 {
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
+
+	finishTelop = new FinishTelop();
 
 	InitGameItem();
 	StartGameItemTime();
@@ -64,6 +67,7 @@ void GameScene::Init()
 void GameScene::Uninit()
 {
 	SAFE_DELETE(sceneCamera);
+	SAFE_DELETE(finishTelop);
 
 	UninitGameItem();
 
@@ -123,9 +127,11 @@ void GameScene::Update()
 		float sizeCake = GetPlayerSize();
 		AddUI_size((int)sizeCake);
 
-		if (distance >= 60.0f * 60.0f)
+		//60ƒtƒŒ[ƒ€*30•b‚ÅƒS[ƒ‹
+		if (distance >= 60.0f * 30.0f&& inGame)
 		{
 			inGame = false;
+			finishTelop->Set(nullptr);
 		}
 	}
 	else
@@ -172,6 +178,8 @@ void GameScene::Draw()
 	DrawUI_size();
 	DrawUI_distance();
 	DrawEffect();
+
+	finishTelop->Draw();
 
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
