@@ -112,6 +112,12 @@ public:
 	{
 		return isDelete;
 	}
+
+	bool IsHit()
+	{
+		return isHit;
+	}
+
 	void Uninit(){}
 	void OnColliderHit(ColliderObserver *other) final;
 	void SetTexture(LPDIRECT3DTEXTURE9 pTex);
@@ -125,6 +131,7 @@ protected:
 	bool							isPlus;			// プラス属性(当たっていいやつ？)
 	bool							isShow;			// 表示の可否
 	bool							isDelete;		// 削除のコントロール
+	bool							isHit;			// プレイヤーにあたったか
 };
 
 //---------------------------------------------------------------------
