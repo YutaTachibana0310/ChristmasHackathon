@@ -131,18 +131,9 @@ void GameScene::Update()
 		if (distance >= 60.0f * 30.0f&& inGame)
 		{
 			inGame = false;
-			finishTelop->Set(nullptr);
-		}
-	}
-	else
-	{
-		if (Keyboard::GetTrigger(DIK_RETURN))
-		{
-			int type = TransitionType::HexaPop;
-			TransitionController::Instance()->SetTransition(false, TransitionType(type), [&]()
+			finishTelop->Set([this]()
 			{
-				BGM::Fade(0.0f, 60, true);
-				SceneManager::ChangeScene(GameConfig::TitleScene);
+				OnFinishScene();
 			});
 		}
 	}
@@ -183,4 +174,16 @@ void GameScene::Draw()
 
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+}
+
+/**************************************
+ƒV[ƒ“I—¹Žž‚Ìˆ—
+***************************************/
+void GameScene::OnFinishScene()
+{
+	TransitionController::Instance()->SetTransition(false, TransitionType::HexaPop, []()
+	{
+		BGM::Fade(0.0f, 60, true);
+		SceneManager::ChangeScene(GameConfig::TitleScene);
+	});
 }

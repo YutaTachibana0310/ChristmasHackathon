@@ -28,6 +28,8 @@ public:
 	virtual void Update() override;
 	virtual void Draw() override;
 
+	void OnFinishScene();
+
 private:
 	float distance;
 
