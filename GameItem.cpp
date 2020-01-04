@@ -437,7 +437,7 @@ void Item::SetGameItem(float X, ITEM_TEXTURE Tex, ITEM_CLASS Class, bool bPlus,.
 GameItem::GameItem() :isPlus(0), isShow(true), isDelete(false), isHit(false)
 {
 	collider = BoxCollider3D::Create("Item", transform);
-	collider->SetSize({ ITEM_SIZE_X * 2, ITEM_SIZE_Y * 2, 0.0f });
+	collider->SetSize({ ITEM_SIZE_X, ITEM_SIZE_Y, 0.0f });
 	collider->AddObserver(this);
 //	SetEffect(D3DXVECTOR3(SCREEN_CENTER_X, SCREEN_CENTER_Y, 0), DOWN);	// デバッグ用
 
@@ -475,11 +475,6 @@ void GameItem::Init()
 	初期化時に当たり判定を有効化する
 	*/
 	collider->SetActive(true);
-
-	/*
-	ヒットフラグを立てる
-	*/
-	isHit = true;
 }
 
 /*=====================================================================
@@ -583,8 +578,12 @@ void GameItem::OnColliderHit(ColliderObserver *other)
 	判定が残り続けるのでオフにする
 	*/
 	collider->SetActive(false);
-
-
+	
+	/*
+	ヒットフラグを立てる
+	*/
+	isHit = true;
+	
 	//MessageBox(NULL, "当たり判定", NULL, NULL);
 //	LastWord();	
 }
