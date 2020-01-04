@@ -24,6 +24,7 @@
 #include "CreamRoad.h"
 #include "GameParticleManager.h"
 #include "GameConfig.h"
+#include "FinishTelop.h"
 
 #include "title.h"
 
@@ -34,6 +35,8 @@ void GameScene::Init()
 {
 	sceneCamera = new Camera();
 	Camera::SetMainCamera(sceneCamera);
+
+	finishTelop = new FinishTelop();
 
 	InitGameItem();
 	StartGameItemTime();
@@ -55,7 +58,7 @@ void GameScene::Init()
 	int type = TransitionType::HexaPop;
 	TransitionController::Instance()->SetTransition(true, TransitionType(type));
 
-	BGM::FadeIn(GameConfig::GameScene, 0.0f, 60, false);
+	BGM::FadeIn(GameConfig::GameScene, 1.0f, 60, false);
 }
 
 /**************************************
@@ -64,6 +67,7 @@ void GameScene::Init()
 void GameScene::Uninit()
 {
 	SAFE_DELETE(sceneCamera);
+	SAFE_DELETE(finishTelop);
 
 	UninitGameItem();
 
@@ -94,9 +98,12 @@ void GameScene::Update()
 	UpdateRoad();
 	UpdateCreamRoad();
 
-	//当たり判定
-	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
-	ColliderManager::Instance()->CheckRoundRobin("Player", "Item");
+	if (inGame)
+	{
+		//当たり判定
+		ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
+		ColliderManager::Instance()->CheckRoundRobin("Player", "Item");
+	}
 
 	UpdateUI_size();
 	UpdateUI_distance();
@@ -104,7 +111,7 @@ void GameScene::Update()
 	UpdateEffect();
 
 	GameParticleManager::Instance()->Update();
-	
+
 	if (inGame)
 	{
 		UpdatePlayer();
@@ -123,20 +130,13 @@ void GameScene::Update()
 		float sizeCake = GetPlayerSize();
 		AddUI_size((int)sizeCake);
 
-		if (distance >= 60.0f * 60.0f)
+		//60フレーム*30秒でゴール
+		if (distance >= 60.0f * 30.0f&& inGame)
 		{
 			inGame = false;
-		}
-	}
-	else
-	{
-		if (Keyboard::GetTrigger(DIK_RETURN))
-		{
-			int type = TransitionType::HexaPop;
-			TransitionController::Instance()->SetTransition(false, TransitionType(type), [&]()
+			finishTelop->Set([this]()
 			{
-				BGM::Fade(0.0f, 60, true);
-				SceneManager::ChangeScene(GameConfig::TitleScene);
+				OnFinishScene();
 			});
 		}
 	}
@@ -173,6 +173,20 @@ void GameScene::Draw()
 	DrawUI_distance();
 	DrawEffect();
 
+	finishTelop->Draw();
+
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+}
+
+/**************************************
+シーン終了時の処理
+***************************************/
+void GameScene::OnFinishScene()
+{
+	TransitionController::Instance()->SetTransition(false, TransitionType::HexaPop, []()
+	{
+		BGM::Fade(0.0f, 60, true);
+		SceneManager::ChangeScene(GameConfig::TitleScene);
+	});
 }

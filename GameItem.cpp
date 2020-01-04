@@ -17,6 +17,9 @@
 #include "Framework\Tool\DebugWindow.h"
 #include "Framework\Core\ObjectPool.h"
 
+//メモリリークの検出フレームワーク
+#include "Framework/Tool/MemoryDetect.h"
+
 //---------------------------------------------------------------------
 //	マクロ定義(同cpp内限定)
 //---------------------------------------------------------------------
@@ -127,7 +130,7 @@ Item::Item() :pVtx(0), li_Item(0), CSV_Data(0), CSV_idx(-1), tItv(0), minus(0), 
 	// テクスチャの読み込み
 	for (int i = 0; i < ITEM_TEXTURE::MAX_ITEMTEXTURE; i++)
 	{
-		ResourceManager::Instance()->LoadTexture(GetTexFileAddress((ITEM_TEXTURE)i).c_str());
+		ResourceManager::Instance()->LoadTexture(GetTexFileAddress((ITEM_TEXTURE)i).c_str());		
 	}
 
 	// 頂点の作成
@@ -211,7 +214,18 @@ Item::~Item()
 		ResourceManager::Instance()->ReleaseTexture(GetTexFileAddress((ITEM_TEXTURE)i).c_str());
 	}
 
+	/*
+	頂点バッファの解放が抜けていた
+	*/
+	SAFE_RELEASE(pVtx);
 
+	/*
+	リストに残っているGameItemの削除が必要
+	*/
+	for (auto&& item : li_Item)
+	{
+		SAFE_DELETE(item);
+	}
 }
 
 /*=====================================================================
@@ -364,8 +378,8 @@ const char * const	: 帰ってくるファイル
 std::string Item::GetTexFileAddress(ITEM_TEXTURE Tex)
 {
 	const char* const filename[ITEM_TEXTURE::MAX_ITEMTEXTURE] = {
-		{"data/TEXTURE/Item/pipo-tr004.png"},
-		{"data/TEXTURE/Item/BULLET.png"}
+		{"data/TEXTURE/Item/dust.png"},
+		{"data/TEXTURE/Item/strawberry.png"}
 	};
 
 	return std::string(filename[Tex]);
@@ -420,10 +434,10 @@ void Item::SetGameItem(float X, ITEM_TEXTURE Tex, ITEM_CLASS Class, bool bPlus,.
 +GameItem::コンストラクタ関数
 引数: void
 =====================================================================*/
-GameItem::GameItem() :isPlus(0), isShow(true), isDelete(false)
+GameItem::GameItem() :isPlus(0), isShow(true), isDelete(false), isHit(false)
 {
 	collider = BoxCollider3D::Create("Item", transform);
-	collider->SetSize({ ITEM_SIZE_X * 2, ITEM_SIZE_Y * 2, 0.0f });
+	collider->SetSize({ ITEM_SIZE_X, ITEM_SIZE_Y, 0.0f });
 	collider->AddObserver(this);
 //	SetEffect(D3DXVECTOR3(SCREEN_CENTER_X, SCREEN_CENTER_Y, 0), DOWN);	// デバッグ用
 
@@ -436,6 +450,11 @@ GameItem::GameItem() :isPlus(0), isShow(true), isDelete(false)
 GameItem::~GameItem()
 {
 	collider.reset();
+
+	/*
+	自身が参照してるテクスチャの解放が必要
+	*/
+	SAFE_RELEASE(pD3DTexture);
 }
 
 /*=====================================================================
@@ -448,7 +467,14 @@ void GameItem::Init()
 	isPlus = false;
 	isShow = true;
 	isDelete = false;
+	isHit = false;
+
 	SetActive(true);
+
+	/*
+	初期化時に当たり判定を有効化する
+	*/
+	collider->SetActive(true);
 }
 
 /*=====================================================================
@@ -467,23 +493,29 @@ void GameItem::EachItemUpdate()
 =====================================================================*/
 void GameItem::LastWord(Item * item)
 {
-	if (isPlus)
+	/*
+	プレイヤーとあたっていたときだけエフェクト発生
+	*/
+	if (isHit)
 	{
+		if (isPlus)
+		{
 #if IS_ITEM_EFFECT_POS_SCREEN
-		SetEffect(EFFECT_POS_SCREEN, UP);
+			SetEffect(EFFECT_POS_SCREEN, UP);
 #else
-		SetEffect(transform->GetPosition(), UP);
+			SetEffect(transform->GetPosition(), UP);
 #endif
-		item->CountPlus();
-	}
-	else
-	{
+			item->CountPlus();
+		}
+		else
+		{
 #if IS_ITEM_EFFECT_POS_SCREEN
-		SetEffect(EFFECT_POS_SCREEN, DOWN);
+			SetEffect(EFFECT_POS_SCREEN, DOWN);
 #else
-		SetEffect(transform->GetPosition(), DOWN);
+			SetEffect(transform->GetPosition(), DOWN);
 #endif
-		item->CountMinus();
+			item->CountMinus();
+		}
 	}
 
 	SetActive(false);
@@ -542,7 +574,16 @@ void GameItem::OnColliderHit(ColliderObserver *other)
 		Debug::Log("Hit ITEM =Pos(%f,%f,%f)", pos.x, pos.y, pos.z);
 	}
 
-
+	/*
+	判定が残り続けるのでオフにする
+	*/
+	collider->SetActive(false);
+	
+	/*
+	ヒットフラグを立てる
+	*/
+	isHit = true;
+	
 	//MessageBox(NULL, "当たり判定", NULL, NULL);
 //	LastWord();	
 }

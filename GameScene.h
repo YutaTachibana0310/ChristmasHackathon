@@ -14,6 +14,7 @@
 /**************************************
 前方宣言
 ***************************************/
+class FinishTelop;
 
 /**************************************
 クラス定義
@@ -27,9 +28,13 @@ public:
 	virtual void Update() override;
 	virtual void Draw() override;
 
+	void OnFinishScene();
+
 private:
 	float distance;
 
 	bool inGame;
+
+	FinishTelop *finishTelop;
 };
 #endif

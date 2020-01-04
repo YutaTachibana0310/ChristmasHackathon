@@ -6,7 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include <time.h>
-//#include "Framework/Tool/MemoryDetect.h"
+#include "Framework/Tool/MemoryDetect.h"
 #include "Framework/Tool/DebugWindow.h"
 #include "GameMain.h"
 
@@ -47,9 +47,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// 使うために、先にFramework/Tool/MemotyDetect.hをインクルードする
 	// メモリリーク検査用
-	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// 特定のcppを追跡用
-	//_CrtSetBreakAlloc(144324);
+	//_CrtSetBreakAlloc(571);
 
 	DWORD dwExecLastTime;
 	DWORD dwCurrentTime;

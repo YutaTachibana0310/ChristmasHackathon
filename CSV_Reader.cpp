@@ -672,6 +672,11 @@ HRESULT CreateCSVFromFile_ErrorCheckArgument(const char *filename, char *ReadTyp
 		ErrStr = (char *)calloc(1024, sizeof(char));
 
 		strcpy_s(ErrStr, 1024, _T("ERR:引数が正しくありません\n詳細:"));
+
+		/*
+		allocしたメモリの解放が必要
+		*/
+		free(ErrStr);
 	}
 
 	// ---------- エラーチェック ----------
