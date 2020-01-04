@@ -98,9 +98,12 @@ void GameScene::Update()
 	UpdateRoad();
 	UpdateCreamRoad();
 
-	//“–‚½‚è”»’è
-	ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
-	ColliderManager::Instance()->CheckRoundRobin("Player", "Item");
+	if (inGame)
+	{
+		//“–‚½‚è”»’è
+		ColliderManager::Instance()->CheckRoundRobin("Player", "CreamRoad");
+		ColliderManager::Instance()->CheckRoundRobin("Player", "Item");
+	}
 
 	UpdateUI_size();
 	UpdateUI_distance();
@@ -108,7 +111,7 @@ void GameScene::Update()
 	UpdateEffect();
 
 	GameParticleManager::Instance()->Update();
-	
+
 	if (inGame)
 	{
 		UpdatePlayer();
